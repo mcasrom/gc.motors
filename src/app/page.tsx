@@ -111,6 +111,7 @@ export default function Home() {
             <a href="#services" className="hover:text-[var(--color-primary)]">Services</a>
             <a href="#fleet" className="hover:text-[var(--color-primary)]">Rentals</a>
             <a href="#used-cars" className="hover:text-[var(--color-primary)]">Buy</a>
+            <a href="/about" className="hover:text-[var(--color-primary)]">About</a>
             <a href="#chat" className="hover:text-[var(--color-primary)]">AI Chat</a>
             <a href="#contact" className="hover:text-[var(--color-primary)]">Contact</a>
           </div>
