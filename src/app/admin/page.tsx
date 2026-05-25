@@ -12,6 +12,7 @@ export default function AdminPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [password, setPassword] = useState("");
   const [authed, setAuthed] = useState(false);
+  const ADMIN_PIN = "2026";
   const [filter, setFilter] = useState("today");
 
   useEffect(() => {
@@ -33,10 +34,11 @@ export default function AdminPage() {
   if (!authed) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <form onSubmit={(e) => { e.preventDefault(); setAuthed(true); }} className="bg-white p-8 rounded-2xl">
+        <form onSubmit={(e) => { e.preventDefault(); if (password === ADMIN_PIN) setAuthed(true); }} className="bg-white p-8 rounded-2xl">
           <h1 className="text-xl font-bold mb-4">GC Auto Admin</h1>
           <input type="password" value={password} onChange={e => setPassword(e.target.value)}
             placeholder="PIN" className="w-full px-4 py-3 border rounded-xl mb-4" />
+          {password && password !== ADMIN_PIN && <p className="text-red-500 text-sm mb-2">Wrong PIN</p>}
           <button className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold">Enter</button>
         </form>
       </div>
