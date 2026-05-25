@@ -45,6 +45,7 @@ export default function Home() {
   const [bookingData, setBookingData] = useState<any>(null);
   const [slots, setSlots] = useState<Record<string, string[]>>({});
   const [selectedDate, setSelectedDate] = useState("");
+  const [fleetData, setFleetData] = useState<any[]>([]);
 
   const handleChat = async () => {
     if (!chatInput.trim()) return;
@@ -96,7 +97,10 @@ export default function Home() {
     }
   };
 
-  useEffect(() => { loadSlots(); }, []);
+  useEffect(() => {
+    loadSlots();
+    fetch("/api/fleet").then(r => r.json()).then(d => setFleetData(d.fleet || [])).catch(() => {});
+  }, []);
 
   return (
     <div className="min-h-screen bg-[var(--color-surface)] font-body text-[var(--color-foreground)]">
@@ -208,7 +212,7 @@ export default function Home() {
           <p className="text-center text-slate-500 mb-4">Perfect for students, backpackers & temporary workers.</p>
           <p className="text-center text-sm text-slate-400 mb-10">Weekly discounts up to 30% · Monthly rates available · No deposit for students</p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {fleet.map((car, i) => (
+            {fleetData.map((car, i) => (
               <div key={i} className="bg-stone-50 p-6 rounded-2xl border border-stone-200">
                 <div className="flex justify-between items-start mb-4">
                   <div>
