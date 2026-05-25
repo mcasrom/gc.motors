@@ -19,12 +19,7 @@ const fleet = [
   { model: "Mitsubishi Outlander", type: "SUV", price: 60, available: true, best: "Group" },
 ];
 
-const usedCars = [
-  { model: "Toyota Corolla 2012", price: "$6,500", km: "145,000", condition: "Excellent", badge: "Student Pick" },
-  { model: "Mazda 3 2013", price: "$5,800", km: "132,000", condition: "Good", badge: "Best Value" },
-  { model: "Hyundai Getz 2010", price: "$3,200", km: "180,000", condition: "Fair", badge: "Cheapest" },
-  { model: "Holden Cruze 2014", price: "$4,900", km: "120,000", condition: "Good", badge: "Reliable" },
-];
+
 
 const faqs = [
   { q: "Can I rent with an international license?", a: "Yes. With a valid IDP (International Driving Permit). Minimum age 21." },
@@ -46,6 +41,7 @@ export default function Home() {
   const [slots, setSlots] = useState<Record<string, string[]>>({});
   const [selectedDate, setSelectedDate] = useState("");
   const [fleetData, setFleetData] = useState<any[]>([]);
+  const [saleData, setSaleData] = useState<any[]>([]);
 
   const handleChat = async () => {
     if (!chatInput.trim()) return;
@@ -100,6 +96,7 @@ export default function Home() {
   useEffect(() => {
     loadSlots();
     fetch("/api/fleet").then(r => r.json()).then(d => setFleetData(d.fleet || [])).catch(() => {});
+    fetch("/api/sales").then(r => r.json()).then(d => setSaleData(d.sales || [])).catch(() => {});
   }, []);
 
   return (
@@ -155,7 +152,7 @@ export default function Home() {
       <section className="py-12 bg-slate-800 text-white">
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
-            <div className="text-3xl font-bold text-amber-500">6+</div>
+            <div className="text-3xl font-bold text-amber-500">{fleetData.length}+</div>
             <div className="text-sm text-slate-300">Fleet Vehicles</div>
           </div>
           <div>
@@ -249,24 +246,28 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-center mb-2">Used Cars for Sale</h2>
           <p className="text-center text-slate-500 mb-4">Inspected, verified & ready to drive. First car? We guide you through registration, insurance & roadworthy.</p>
           <p className="text-center text-sm text-slate-400 mb-10">Prices from $3,200 · Financing available · Student-friendly</p>
+          {saleData.length === 0 ? (
+            <p className="text-center text-slate-400 py-12">No vehicles available right now. Check back soon.</p>
+          ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {usedCars.map((car, i) => (
-              <div key={i} className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+            {saleData.map((car, i) => (
+              <div key={car.id || i} className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex justify-between items-start mb-3">
-                  <span className="text-xs font-medium bg-amber-100 text-amber-800 px-2 py-1 rounded">{car.badge}</span>
+                  {car.badge && <span className="text-xs font-medium bg-amber-100 text-amber-800 px-2 py-1 rounded">{car.badge}</span>}
                   <span className="text-xs text-slate-400">{car.km} km</span>
                 </div>
                 <h3 className="font-semibold text-lg mb-1">{car.model}</h3>
                 <p className="text-sm text-slate-500 mb-3">{car.condition}</p>
-                <div className="text-2xl font-bold text-[var(--color-primary)] mb-4">{car.price}</div>
-                <button className="w-full bg-slate-800 text-white py-2 rounded-lg font-medium hover:bg-slate-900 transition-colors">
+                <div className="text-2xl font-bold text-[var(--color-primary)] mb-4">${car.price?.toLocaleString()}</div>
+                <a href="#contact" className="block w-full bg-slate-800 text-white py-2 rounded-lg font-medium hover:bg-slate-900 transition-colors text-center">
                   Inquire
-                </button>
+                </a>
               </div>
             ))}
           </div>
+          )}
           <div className="text-center mt-8">
-            <p className="text-sm text-slate-400">More vehicles available. Contact us for the full list.</p>
+            <p className="text-sm text-slate-400">{saleData.length > 0 ? "More vehicles available. Contact us for the full list." : ""}</p>
           </div>
         </div>
       </section>
