@@ -1,0 +1,19 @@
+models:
+  - title: Gemma 3 4B
+    provider: ollama
+    model: gemma3:4b
+    numCtx: 4096
+    numThread: 6
+
+  - title: Qwen3 4B
+    provider: ollama
+    model: qwen3:4b
+    numCtx: 4096
+    numThread: 6
+
+tabAutocompleteModel:
+  title: Qwen Coder 1.5B
+  provider: ollama
+  model: qwen2.5-coder:1.5b
+  numCtx: 2048
+  numThread: 4
