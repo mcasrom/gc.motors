@@ -122,7 +122,7 @@ export default function AdminPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <input value={editCar.model || ""} onChange={e => setEditCar({ ...editCar, model: e.target.value })} placeholder="Modelo" className="px-3 py-2 border rounded-xl text-sm" />
                   <input value={editCar.type || ""} onChange={e => setEditCar({ ...editCar, type: e.target.value })} placeholder="Tipo" className="px-3 py-2 border rounded-xl text-sm" />
-                  <input type="number" value={editCar.price || ""} onChange={e => setEditCar({ ...editCar, price: Number(e.target.value) })} placeholder="Precio/día AUD" className="px-3 py-2 border rounded-xl text-sm" />
+                  <input type="number" value={editCar.price ?? ""} onChange={e => setEditCar({ ...editCar, price: Number(e.target.value) })} placeholder="Precio/día AUD" className="px-3 py-2 border rounded-xl text-sm" />
                   <input value={editCar.best || ""} onChange={e => setEditCar({ ...editCar, best: e.target.value })} placeholder="Para quién" className="px-3 py-2 border rounded-xl text-sm" />
                   <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={editCar.available !== false} onChange={e => setEditCar({ ...editCar, available: e.target.checked })} /> Disponible</label>
                 </div>
