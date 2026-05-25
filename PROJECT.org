@@ -1,142 +1,98 @@
-#+TITLE: Fix & Rent Gold Coast - Project Documentation
-#+AUTHOR: mcasrom
-#+DATE: 2026-04-19
-#+EMAIL: mcasrom.emacs@gmail.com
-#+DESCRIPTION: Smart car repair + rental business in Gold Coast, Queensland, Australia
+#+TITLE: Ecosistema Web para Taller, Alquiler y Compraventa de Vehículos en Gold Coast
+#+AUTHOR: Mike
+#+EMAIL: info@example.com
+#+DATE: 2026-05-23
+#+DESCRIPTION: Diseño estratégico y técnico de un ecosistema digital para taller mecánico, alquiler y compraventa de vehículos orientado al mercado internacional en Gold Coast Australia.
+#+KEYWORDS: gold coast, taller mecanico, alquiler coches, coches ocasion, estudiantes internacionales, australia
+#+LANGUAGE: es
+#+OPTIONS: toc:t num:t ^:nil
+#+STARTUP: overview indent
 
-* Overview
+* Introducción
 
-Project: Fix & Rent Gold Coast
-Type: SaaS Webapp for local business (repair + rental)
-Location: Gold Coast, Queensland, Australia
-Website: https://reparaalquilaconia.vercel.app
+Este documento define una arquitectura estratégica y tecnológica
+para un pequeño ecosistema empresarial automotriz ubicado en
+Gold Coast, Australia.
 
-* Problem Statement
+El negocio combina tres líneas principales:
 
-Traditional mechanic shops and rental car businesses in Gold Coast face:
-- Manual booking (phone/WhatsApp) - lost customers
-- No AI diagnosis - inefficiency
-- Low fleet utilization - high costs
-- Poor online presence - no visibility
+1. Taller de reparación de vehículos
+2. Alquiler de vehículos
+3. Compraventa de vehículos de ocasión
 
-* Solution
+El público objetivo principal está formado por:
 
-AI-powered system with:
-- Instant diagnosis chatbot
-- Online booking
-- Fleet management
-- Local SEO
+- Estudiantes internacionales
+- Trabajadores temporales
+- Backpackers
+- Comunidad sudamericana
+- Residentes locales
 
-* Tech Stack
+El objetivo del ecosistema es crear una plataforma digital
+integrada, escalable y orientada a SEO local, automatización
+y captación de clientes.
 
-| Component | Technology |
-|-----------|-----------|
-| Frontend | Next.js 15 / Tailwind CSS |
+* Objetivos Estratégicos
+
+| Objetivo | Prioridad | Impacto |
+|-----------+------------+----------|
+| Captación de leads | Alta | Muy Alto |
+| Reservas online | Alta | Alto |
+| SEO local | Alta | Muy Alto |
+| Integración WhatsApp | Alta | Alto |
+| Automatización CRM | Media | Alto |
+| Generación de comunidad | Media | Medio |
+| Fidelización clientes | Alta | Alto |
+| Escalabilidad futura | Media | Alto |
+
+* Estructura Web
+
+| Sección | Objetivo |
+|----------+-----------|
+| Home | Conversión rápida |
+| Repairs | Captación mecánica |
+| Rentals | Reservas alquiler |
+| Used Cars | Venta vehículos |
+| Guides | SEO y tráfico orgánico |
+| About | Confianza |
+| Contact | Conversión |
+
+* Público Objetivo
+
+- **Estudiantes Internacionales**: Sudamericanos (colombianos, argentinos, chilenos, brasileños)
+- **Backpackers**: Europeos, asiáticos
+- **Trabajadores Temporales**: Visas work & holiday
+- **Locales Australianos**: Residentes Gold Coast
+
+* Keywords Estratégicas
+
+| Keyword | Dificultad SEO | Potencial |
+|----------+----------------+------------|
+| mechanic gold coast | Alta | Alto |
+| cheap mechanic gold coast | Media | Alto |
+| student car rental gold coast | Baja | Muy Alto |
+| backpacker cars gold coast | Baja | Alto |
+| used cars under 10000 gold coast | Media | Alto |
+| first car australia student | Baja | Muy Alto |
+
+* Stack Tecnológico
+
+| Área | Tecnología |
+|------+-------------|
+| Frontend | Next.js 16 |
 | Backend | Next.js API Routes |
-| AI | OpenAI API / Fallback rules |
-| Deployment | Vercel |
-| Database | Planned: Supabase |
+| Hosting | Vercel |
+| AI | Groq API / fallback |
+| Database | Supabase (planned) |
+| Mapas | Google Maps API |
+| Automatización | Zapier / n8n |
 
-* Features
+* Roadmap
 
-| Feature | Status |
-|---------|--------|
-| Landing page | DONE |
-| AI Chatbot | DONE |
-| Booking form | DONE |
-| SEO setup | DONE |
-| Responsive | DONE |
-| Database | TODO |
-| Email notifications | TODO |
-| CRM | TODO |
-
-* SEO Keywords
-
-- car repair Gold Coast
-- car rental Gold Coast
-- cheap car hire Gold Coast
-- mechanic Gold Coast
-- auto repair Gold Coast
-- vehicle rental Queensland
-
-* Architecture
-
-#+BEGIN_SRC plantuml
-@startuml
-actor Customer
-Customer -> Landing : Visit
-Landing -> AI_Chatbot : Describe issue
-AI_Chatbot -> OpenAI : Analyze
-OpenAI -> AI_Chatbot : Diagnosis
-AI_Chatbot -> Customer : Response + Quote
-Customer -> Booking : Submit form
-Booking -> Database : Save
-Database -> Admin : Notify
-@enduml
-#+END_SRC
-
-* Deployment
-
-Development:
-#+BEGIN_SRC bash
-npm run dev
-#+END_SRC
-
-Production:
-#+BEGIN_SRC bash
-vercel --prod
-#+END_SRC
-
-Environment Variables:
-- OPENAI_API_KEY (optional - fallback included)
-
-* Contact Info
-
-- Phone: +61 7 1234 5678
-- Email: info@fixrentgoldcoast.com.au
-- Address: Gold Coast, Queensland, Australia
-
-* Sprint Roadmap
-
-** Sprint 1 - MVP (DONE)
-- [x] Landing page
-- [x] AI chatbot with fallback
-- [x] Booking form
-- [x] SEO setup
-
-** Sprint 2 - Database & Notifications (PLANNED)
-- [ ] Set up Supabase
-- [ ] Email notifications
-- [ ] SMS notification
-
-** Sprint 3 - CRM & Management (PLANNED)
-- [ ] Admin dashboard
-- [ ] Fleet management
-- [ ] Customer history
-
-** Sprint 4 - Advanced Features (PLANNED)
-- [ ] Real-time availability
-- [ ] Dynamic pricing
-- [ ] Loyalty system
-
-** Sprint 5 - Growth (PLANNED)
-- [ ] Blog/SEO content
-- [ ] Google Ads
-- [ ] Social media ads
-
-* TODO
-
-- [ ] Configure real phone number
-- [ ] Add real address on map
-- [ ] Set up Supabase database
-- [ ] Add email notifications
-- [ ] Create admin dashboard
-- [ ] Add blog posts
-- [ ] Set up Google Business
-
-* Notes
-
-- All content in English for Australian market
-- Currently using placeholder phone/address
-- AI chatbot works with fallback (no API key needed)
-- OpenAI integration optional but recommended
+| Fase | Duración | Objetivo |
+|------+-----------+-----------|
+| Fase 1 | 1 mes | Web básica + logo |
+| Fase 2 | 2 meses | SEO + RRSS |
+| Fase 3 | 3 meses | Automatización |
+| Fase 4 | 6 meses | Comunidad |
+| Fase 5 | 12 meses | Escalabilidad |

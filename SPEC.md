@@ -1,75 +1,56 @@
-# SPEC - Fix & Rent Gold Coast
+# SPEC - GC Auto | Gold Coast
 
 ## 1. Project Overview
-
-- **Name**: Fix & Rent Gold Coast
-- **Type**: SaaS Webapp for local business (repair + rental)
+- **Name**: GC Auto | Gold Coast
+- **Type**: Web ecosystem for auto repair, rental & used cars
 - **Location**: Gold Coast, Queensland, Australia
-- **Core**: Landing + AI Chatbot + Booking system
+- **Target**: International students, backpackers, workers, South American community
+- **Core**: Landing + AI Chat + Booking + Used Cars
 
 ## 2. UI/UX Spec
 
 ### Layout
 - Single page with scroll
-- Fixed navbar
-- Sections: Hero, Services, Fleet, AI Chat, Testimonials, FAQs, Contact, Footer
+- Fixed navbar with logo (GC_logo.png)
+- Sections: Hero, Services, Fleet, Used Cars, AI Chat, FAQs, Contact, Footer
 
 ### Colors
-- Primary: `#0D9488` (teal-600)
-- Secondary: `#1E293B` (slate-800)
-- Accent: `#F59E0B` (amber-500)
-- Background: `#FAFAF9` (stone-50)
+- Primary: `#0f766e` (teal-700)
+- Dark: `#1e293b` (slate-800)
+- Accent: `#d97706` (amber-600)
+- Light: `#fafaf9` (stone-50)
 - Text: `#334155` (slate-700)
 
 ### Typography
 - Headings: "Outfit" (Google Fonts)
 - Body: "DM Sans" (Google Fonts)
-- H1: 48px/56px bold
-- H2: 36px/44px semibold
+- H1: 48px/56px bold, H2: 36px/44px semibold
 - Body: 16px/24px regular
 
 ### Responsive
-- Mobile: < 640px
-- Tablet: 640px - 1024px
-- Desktop: > 1024px
+- Mobile: < 640px, Tablet: 640px-1024px, Desktop: > 1024px
 
 ## 3. Features
-
-### Landing Page
-- Hero with dual CTA (Repair / Rent)
+- Hero with 3 CTAs (Repair / Rent / Buy)
 - AI Chat embedded inline
 - Fleet grid visible
-- Testimonials
+- Used cars listings
 - Accordion FAQs
-
-### AI Chatbot
-- Input: Issue description
-- Output: Diagnosis + est. cost + book appointment
-- Integration: OpenAI API
-
-### Booking System
-- Form: Name, phone, service, date
-- Validation: Future date, complete data
-- Confirmation: Success message
+- Booking form
 
 ## 4. SEO Local
-
 ### Target Keywords
-- car repair Gold Coast
-- car rental Gold Coast
-- cheap car hire Gold Coast
-- mechanic near me
-- auto repair Gold Coast
+- mechanic gold coast
+- cheap mechanic gold coast
+- student car rental gold coast
+- backpacker cars gold coast
+- used cars gold coast
+- first car australia student
 
 ### Metadata
-- Title: "Car Repair + Car Rental Gold Coast | Smart Mechanic + Cheap Hire"
-- Description: "Mechanic workshop + car rental in Gold Coast, Queensland. AI diagnosis, online booking, loan vehicle. 20+ vehicles. Call +61 7 1234 5678"
+- Title: "GC Auto | Gold Coast - Car Repair, Rental & Used Cars"
+- Description: "Auto repair, car rental & used cars in Gold Coast. AI diagnosis, student-friendly pricing, roadworthy certificates. Call now."
 
-## 5. Acceptance Criteria
-
-- [x] Landing loads in < 3s
-- [x] Chatbot responds to issue descriptions
-- [x] Booking form works
-- [x] SEO local optimized
-- [x] Fully responsive
-- [ ] PWA installable
+## 5. Logo
+- File: `GC_logo.png` (JPEG, 771x1024)
+- Used in navbar and favicon
