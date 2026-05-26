@@ -1,57 +1,46 @@
-# WAYAHEAD - GC Auto | Gold Coast
+# WAYAHEAD — GC Motors | Gold Coast
 
-## Sprint 1 (Week 1-2) — MVP Live ✅
-- [x] Landing page with brand "GC Auto | Gold Coast"
+## ✅ Completed — Project Live & Functional
+
+### Deployed Features
+- [x] Landing page with brand "GC Motors | Gold Coast"
 - [x] Three business lines: Repair, Rental, Used Cars
 - [x] AI chatbot with fallback
-- [x] Booking form
-- [x] GC_logo.png integrated as logo + favicon
-- [x] SEO metadata + keywords actualizados
-- [x] Deploy to Vercel (https://reparaalquilaconia.vercel.app)
-- [x] PROJECT.org, SPEC.md, HOWTO.md, AGENTS.md, WAYAHEAD.md actualizados
-- [x] Contenido orientado a estudiantes internacionales + backpackers + comunidad sudamericana
-- [x] Nueva sección Used Cars + workshop services detail
-- [x] Mención "Hablamos español / Falamos português" en footer y contacto
+- [x] Booking form with vehicle info (make, model, year, plate)
+- [x] Service catalog (15 services with prices & duration)
+- [x] Rental booking flow — select car, duration, scroll to form
+- [x] Admin dashboard (5 tabs: Agenda, Taller, Flota, Venta, Clientes)
+- [x] Fleet management CRUD with image upload
+- [x] Sales/Used Cars CRUD with image upload
+- [x] Jobs/Work orders management with mechanic assignment
+- [x] Customer history lookup by phone
+- [x] Data persistence via JSON files in `data/`
+- [x] Image upload to `public/uploads/` served by nginx
+- [x] Uptime monitoring via Uptime Kuma (6 monitors)
+- [x] SSL via Let's Encrypt + Cloudflare proxy
+- [x] logo.png as favicon, OG image, fallback thumbnail
+- [x] SEO metadata + keywords
+- [x] Deployed to Hetzner (https://gc.motors.viajeinteligencia.com)
+- [x] GitHub repo: https://github.com/mcasrom/gc.motors
 
-## Sprint 2 (Week 3-4) — Database & Notifications
-- [ ] Set up Supabase
-  - [ ] Create tables: bookings, customers, vehicles, inventory
-  - [ ] Connect API routes
-- [ ] Email notifications on booking
-- [ ] WhatsApp integration
-- [ ] Spanish/Portuguese landing pages
+### Tech Stack
+- **Frontend**: Next.js 16, Tailwind CSS v4, TypeScript
+- **Hosting**: Hetzner VPS, PM2, nginx reverse proxy
+- **Monitoring**: Uptime Kuma (Docker, network host)
+- **Images**: Upload to filesystem, served by nginx `alias`
 
-## Sprint 3 (Week 5-6) — CRM & Management
-- [ ] Admin dashboard
-  - [ ] View bookings & inquiries
-  - [ ] Manage fleet availability
-  - [ ] Used car inventory management
-  - [ ] Customer history
-- [ ] Calendar view for workshop
+### Target Audience
+- International students (South America, Europe, Asia)
+- Backpackers & temporary workers
+- Local residents
 
-## Sprint 4 (Week 7-8) — Advanced Features
-- [ ] Real-time vehicle availability
-- [ ] Dynamic pricing (peak/off-peak)
-- [ ] Student loyalty program
-- [ ] Referral system
+### Admin Access
+- URL: `https://gc.motors.viajeinteligencia.com/admin`
+- PIN: `2026`
 
-## Sprint 5 (Week 9-12) — Growth
-- [ ] Blog / Guides (SEO content for students & backpackers)
-- [ ] Google Ads setup
-- [ ] Facebook/Instagram/TikTok campaigns
-- [ ] Google Reviews integration
-- [ ] SEO for Spanish keywords (estudiantes latinos)
-
-## Future Extensions
-- [ ] Mobile app
-- [ ] Partner network (hostels, universities, travel agencies)
-- [ ] Financing integration
-- [ ] Gold Coast airport pickup service
-
-## Notes
-- Logo: GC_logo.png (actual JPEG, served from /public/)
-- Brand: GC Auto | Gold Coast
-- Target: International students, backpackers, South American community
-- Language: English (site) + Spanish/Portuguese (support)
-- Phone: +61 7 1234 5678 (placeholder)
-- Address: Gold Coast, Queensland (generic)
+### Future Ideas (not planned)
+- Supabase database migration
+- Email/WhatsApp notifications
+- Spanish/Portuguese landing pages
+- Mobile app
+- Real-time vehicle availability
