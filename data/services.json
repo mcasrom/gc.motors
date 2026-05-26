@@ -1,0 +1,17 @@
+[
+  { "id": "oil-change", "name": "Oil Change", "duration": 45, "price": 80, "icon": "\uD83D\uDEEF\uFE0F" },
+  { "id": "brake-service", "name": "Brake Service", "duration": 90, "price": 200, "icon": "\uD83D\uDD27" },
+  { "id": "battery", "name": "Battery Replacement", "duration": 30, "price": 150, "icon": "\u26A1" },
+  { "id": "diagnostics", "name": "Full Diagnostics", "duration": 60, "price": 100, "icon": "\uD83D\uDD0D" },
+  { "id": "logbook", "name": "Log Book Service", "duration": 120, "price": 250, "icon": "\uD83D\uDCD6" },
+  { "id": "pre-purchase", "name": "Pre-Purchase Inspection", "duration": 90, "price": 180, "icon": "\uD83D\uDD0E" },
+  { "id": "tire", "name": "Tire Change / Puncture", "duration": 30, "price": 50, "icon": "\uD83D\uDD04" },
+  { "id": "ac-service", "name": "AC Service", "duration": 60, "price": 150, "icon": "\u2744\uFE0F" },
+  { "id": "clutch", "name": "Clutch Repair", "duration": 240, "price": 600, "icon": "\u2699\uFE0F" },
+  { "id": "timing-belt", "name": "Timing Belt Replacement", "duration": 240, "price": 500, "icon": "\u23F1\uFE0F" },
+  { "id": "transmission", "name": "Transmission Service", "duration": 180, "price": 350, "icon": "\uD83D\uDD04" },
+  { "id": "roadworthy", "name": "Roadworthy Certificate", "duration": 60, "price": 120, "icon": "\uD83D\uDCDD" },
+  { "id": "rental", "name": "Car Rental", "duration": 20, "price": 0, "icon": "\uD83D\uDE97" },
+  { "id": "used-car", "name": "Used Car Inquiry", "duration": 30, "price": 0, "icon": "\uD83D\uDCB0" },
+  { "id": "other", "name": "Other / Custom", "duration": 60, "price": 0, "icon": "\uD83D\uDD27" }
+]

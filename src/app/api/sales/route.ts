@@ -10,7 +10,7 @@ const ADMIN_PIN = "2026";
 interface SaleCar {
   id: string; model: string; year: number; km: string;
   price: number; condition: string; badge: string;
-  description: string; status: string; createdAt: string;
+  description: string; status: string; createdAt: string; image?: string;
 }
 
 async function readSales(): Promise<SaleCar[]> {
@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
     description: body.description || "",
     status: body.status || "available",
     createdAt: new Date().toISOString(),
+    image: body.image || "",
   };
   sales.push(car);
   await writeSales(sales);

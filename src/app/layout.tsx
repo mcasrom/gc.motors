@@ -16,23 +16,23 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://gc.motors.viajeinteligencia.com"),
-  title: "GC Auto | Gold Coast - Car Repair, Rental & Used Cars",
-  description: "Auto repair, car rental & used cars in Gold Coast. AI diagnosis, student-friendly pricing, roadworthy certificates, pre-purchase inspections. Trusted by international students and backpackers.",
+  title: "GC Motors | Gold Coast - Car Repair, Rental & Used Cars",
+  description: "Auto repair, car rental & used cars in Gold Coast. AI diagnosis, student-friendly pricing, log book services, pre-purchase inspections. Trusted by international students and backpackers.",
   keywords: [
     "car repair Gold Coast", "car rental Gold Coast", "used cars Gold Coast",
     "cheap mechanic Gold Coast", "student car rental", "backpacker cars",
-    "roadworthy certificate Gold Coast", "pre-purchase inspection",
+    "log book service Gold Coast", "pre-purchase inspection",
     "first car Australia", "cheap car hire Gold Coast",
   ],
   openGraph: {
-    title: "GC Auto | Gold Coast - Auto Repair, Rental & Used Cars",
+    title: "GC Motors | Gold Coast - Auto Repair, Rental & Used Cars",
     description: "Your trusted auto hub in Gold Coast. Repairs, rentals and used cars for students, backpackers and locals.",
     type: "website",
     locale: "en_AU",
-    images: [{ url: "/GC_logo.png", width: 771, height: 1024, alt: "GC Auto Gold Coast" }],
+    images: [{ url: "/logo.png", width: 771, height: 1024, alt: "GC Motors Gold Coast" }],
   },
   robots: { index: true, follow: true },
-  icons: { icon: "/GC_logo.png", apple: "/GC_logo.png" },
+  icons: { icon: "/logo.png", apple: "/logo.png" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

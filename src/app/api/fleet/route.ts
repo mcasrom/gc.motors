@@ -9,7 +9,7 @@ const ADMIN_PIN = "2026";
 
 interface Car {
   id: string; model: string; type: string; price: number;
-  available: boolean; best: string;
+  available: boolean; best: string; image?: string;
 }
 
 async function readFleet(): Promise<Car[]> {
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     id: Date.now().toString(36),
     model: body.model.trim(), type: body.type || "Sedan",
     price: Number(body.price) || 0, available: body.available !== false,
-    best: body.best || "",
+    best: body.best || "", image: body.image || "",
   };
   fleet.push(car);
   await writeFleet(fleet);
