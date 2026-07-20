@@ -40,6 +40,7 @@ export default function Home() {
   const [saleData, setSaleData] = useState<any[]>([]);
   const [rentalDays, setRentalDays] = useState(1);
   const [selectedCar, setSelectedCar] = useState<string>("");
+  const [showCard, setShowCard] = useState(false);
   const contactRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -374,7 +375,7 @@ export default function Home() {
           )}
           <div className="text-center mt-6 text-sm text-slate-500">
             <p>Gold Coast, Queensland, Australia</p>
-            <p>+61 7 1234 5678 · info@gcauto.com.au</p>
+            <p>+61 7 1234 5678 · gcmotors@viajeinteligencia.com</p>
             <p className="mt-2">Hablo español · Falo portugues</p>
           </div>
         </div>
@@ -382,9 +383,55 @@ export default function Home() {
 
       <footer className="py-8 px-4 bg-slate-900 text-slate-400 text-sm text-center">
         <p>Gold Coast, Queensland, Australia</p>
-        <p className="mt-2">+61 7 1234 5678 · info@gcauto.com.au</p>
+        <p className="mt-2">+61 7 1234 5678 · gcmotors@viajeinteligencia.com</p>
         <p className="mt-2 text-xs">&copy; 2026 GC Motors | Gold Coast</p>
       </footer>
+
+      <button
+        onClick={() => setShowCard(true)}
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-white rounded-2xl shadow-lg border border-stone-200 flex items-center justify-center text-2xl hover:shadow-xl hover:scale-105 active:scale-95 transition-all animate-pulse hover:animate-none"
+        title="Business Card"
+      >
+        🪪
+      </button>
+
+      {showCard && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          onClick={() => setShowCard(false)}
+        >
+          <div
+            className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 relative animate-in zoom-in-95"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowCard(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl"
+            >
+              ✕
+            </button>
+            <div className="text-center">
+              <Image src="/logo.png" alt="GC Motors" width={80} height={61} className="mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-slate-800">GC Motors</h3>
+              <p className="text-sm text-teal-600 font-medium mb-4">Gold Coast Auto Hub</p>
+              <div className="space-y-3 text-sm text-slate-600">
+                <p>🔧 Repairs · 🚗 Rentals · 💰 Used Cars</p>
+                <p>📍 Gold Coast, QLD, Australia</p>
+                <p>📞 +61 7 1234 5678</p>
+                <p>✉️ gcmotors@viajeinteligencia.com</p>
+                <p className="text-xs text-slate-400">🇪🇸 Hablamos español · 🇧🇷 Falamos português</p>
+              </div>
+              <a
+                href="#contact"
+                onClick={() => setShowCard(false)}
+                className="mt-6 inline-block bg-[var(--color-primary)] text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-[var(--color-primary-dark)] transition-colors"
+              >
+                Book Now
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

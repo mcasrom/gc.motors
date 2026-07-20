@@ -29,7 +29,7 @@ export default function AboutPage() {
           </p>
           <p className="text-sm text-slate-400 pt-4">
             📍 Gold Coast, Queensland, Australia<br />
-            📞 +61 7 1234 5678 · ✉️ info@gcauto.com.au
+            📞 +61 7 1234 5678 · ✉️ gcmotors@viajeinteligencia.com
           </p>
         </div>
       </div>
