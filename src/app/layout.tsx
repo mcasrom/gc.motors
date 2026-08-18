@@ -35,10 +35,13 @@ export const metadata: Metadata = {
   icons: { icon: "/logo.png", apple: "/logo.png" },
 };
 
+const localBusinessSchema = {"@context": "https://schema.org", "@type": "AutoRepair", "name": "GC Motors", "url": "https://gc.motors.viajeinteligencia.com", "image": "https://gc.motors.viajeinteligencia.com/logo.png", "description": "Car repair, car rental & used cars in Gold Coast. AI diagnosis, student-friendly pricing, log book services, pre-purchase inspections.", "priceRange": "$$", "address": {"@type": "PostalAddress", "addressLocality": "Gold Coast", "addressCountry": "AU"}, "areaServed": {"@type": "Place", "name": "Gold Coast"}};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${outfit.variable} ${dmSans.variable}`}>
       <body className="min-h-full">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-white focus:text-slate-900 focus:rounded-xl focus:shadow-lg focus:text-sm focus:font-medium">
           Skip to main content
         </a>

@@ -91,8 +91,14 @@ export default function Home() {
     } catch { setBookingError("Connection error. Call +61 7 1234 5678"); }
   };
 
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(f => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  };
   return (
     <div className="min-h-screen bg-[var(--color-surface)] font-body text-[var(--color-foreground)]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
           <a href="#" className="flex items-center gap-2">
@@ -115,7 +121,7 @@ export default function Home() {
         <Image src="/banner.png" alt="GC Motors Gold Coast" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">Your Trusted Auto Hub in Gold Coast</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">GC Motors · Auto Repair, Rental & Used Cars in Gold Coast</h1>
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto drop-shadow">Repairs · Rentals · Used Cars — for students, backpackers & locals. AI diagnosis, fair prices, no surprises.</p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a href="#contact" className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-full font-semibold">Book a Repair</a>
