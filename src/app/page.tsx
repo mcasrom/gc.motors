@@ -381,7 +381,7 @@ export default function Home() {
           )}
           <div className="text-center mt-6 text-sm text-slate-500">
             <p>Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia</p>
-            <p>+61 481 268 633 · info@gcmotors-workshop.com</p>
+            <p>📞 <a href="tel:+61481268633" className="hover:underline">+61 481 268 633</a> · ✉️ <a href="mailto:info@gcmotors-workshop.com" className="hover:underline">info@gcmotors-workshop.com</a></p>
             <p className="mt-2">Hablo español · Falo portugues</p>
           </div>
         </div>
@@ -389,7 +389,7 @@ export default function Home() {
 
       <footer className="py-8 px-4 bg-slate-900 text-slate-400 text-sm text-center">
         <p>Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia</p>
-        <p className="mt-2">+61 481 268 633 · info@gcmotors-workshop.com</p>
+        <p className="mt-2">📞 <a href="tel:+61481268633" className="hover:underline">+61 481 268 633</a> · ✉️ <a href="mailto:info@gcmotors-workshop.com" className="hover:underline">info@gcmotors-workshop.com</a></p>
         <p className="mt-2 text-xs">&copy; 2026 GCMotors Workshop | Gold Coast</p>
       </footer>
 
@@ -421,10 +421,10 @@ export default function Home() {
               <h3 className="text-xl font-bold text-slate-800">GCMotors Workshop</h3>
               <p className="text-sm text-teal-600 font-medium mb-4">Gold Coast Auto Hub</p>
               <div className="space-y-3 text-sm text-slate-600">
-                <p>🔧 Repairs · 🚗 Rentals · 💰 Used Cars</p>
+                <p>🔍 Mobile Inspections · 🚗 Rentals · 🔧 Repairs</p>
                 <p>📍 Unit 3G, 31 Rudman Parade, Gold Coast QLD</p>
-                <p>📞 +61 481 268 633</p>
-                <p>✉️ info@gcmotors-workshop.com</p>
+                <p>📞 <a href="tel:+61481268633" className="hover:underline">+61 481 268 633</a></p>
+                <p>✉️ <a href="mailto:info@gcmotors-workshop.com" className="hover:underline">info@gcmotors-workshop.com</a></p>
                 <p className="text-xs text-slate-400">🇪🇸 Hablamos español · 🇧🇷 Falamos português</p>
               </div>
               <a

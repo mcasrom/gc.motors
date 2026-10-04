@@ -29,7 +29,7 @@ export default function AboutPage() {
           </p>
           <p className="text-sm text-slate-400 pt-4">
             📍 Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia<br />
-            📞 +61 481 268 633 · ✉️ info@gcmotors-workshop.com
+            📞 <a href="tel:+61481268633" className="hover:underline">+61 481 268 633</a> · ✉️ <a href="mailto:info@gcmotors-workshop.com" className="hover:underline">info@gcmotors-workshop.com</a>
           </p>
         </div>
       </div>
