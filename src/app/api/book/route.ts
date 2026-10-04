@@ -27,6 +27,49 @@ async function writeJSON(file: string, data: any[]) {
   await writeFile(file, JSON.stringify(data, null, 2));
 }
 
+const SERVICE_LABELS: Record<string, string> = {
+  "oil-change": "Oil Change", "brake-service": "Brake Service", battery: "Battery",
+  diagnostics: "Diagnostics", logbook: "Log Book", "pre-purchase": "Pre-Purchase",
+  tire: "Tire", "ac-service": "AC", clutch: "Clutch", "timing-belt": "Timing Belt",
+  transmission: "Transmission", roadworthy: "Roadworthy", rental: "Rental",
+  "used-car": "Used Car", other: "Other",
+};
+
+async function notifyBooking(b: Booking) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return;
+  const isRental = b.service === "rental" || b.service === "used-car";
+  const to = isRental
+    ? (process.env.BOOKING_TO_RENTALS || "rentals@gcmotors-workshop.com")
+    : (process.env.BOOKING_TO_REPAIRS || "repairs@gcmotors-workshop.com");
+  const from = process.env.RESEND_FROM || "GCMotors Workshop <bookings@gcmotors-workshop.com>";
+  const label = SERVICE_LABELS[b.service] || b.service;
+  const vehicle = [b.vehicleMake, b.vehicleModel, b.vehicleYear ? `(${b.vehicleYear})` : "", b.vehiclePlate]
+    .filter(Boolean).join(" ");
+  const rows = ([
+    ["Name", b.name], ["Phone", b.phone], ["Email", b.email || "—"],
+    ["Service", label], ["Date", `${b.date} ${b.time}`],
+    ["Vehicle", vehicle || "—"], ["Notes", b.description || "—"],
+  ] as [string, string][]).map(([k, v]) =>
+    `<tr><td style="padding:6px 12px;color:#64748b">${k}</td><td style="padding:6px 12px;font-weight:600">${v}</td></tr>`).join("");
+  const html = `<div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto">
+    <h2 style="color:#0f766e">New booking · GCMotors Workshop</h2>
+    <p style="color:#475569">${isRental ? "Rental" : "Repairs/Services"} request from the website.</p>
+    <table style="border-collapse:collapse;width:100%">${rows}</table>
+  </div>`;
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from, to: [to], reply_to: b.email || undefined,
+        subject: `New booking · ${label} · ${b.name} · ${b.date} ${b.time}`, html,
+      }),
+    });
+    if (!res.ok) console.error("Resend error", res.status, await res.text());
+  } catch (e) { console.error("notifyBooking failed", e); }
+}
+
 const ADMIN_PIN = process.env.GC_ADMIN_PIN || "";
 const isAdmin = (auth: string | null) =>
   auth === `Bearer ${process.env.CRON_SECRET}` || auth === `Bearer ${ADMIN_PIN}`;
@@ -56,6 +99,7 @@ export async function POST(req: NextRequest) {
 
     bookings.push(booking);
     await writeJSON(BOOKINGS_FILE, bookings);
+    await notifyBooking(booking);
 
     return NextResponse.json({
       success: true,
