@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 const services = [
-  { icon: "\uD83D\uDD0D", title: "Mobile Pre-Purchase Inspections", desc: "Buying a car? We come to you anywhere in Gold Coast and inspect it before you pay. Full report, no surprises." },
-  { icon: "\uD83D\uDE97", title: "Car Rentals", desc: "Reliable cars for students, backpackers & workers. Weekly & monthly discounts." },
-  { icon: "\uD83D\uDD27", title: "Diagnostics & Repairs", desc: "Oil, brakes, log book services & engine diagnostics. Free initial diagnosis, fair prices." },
-  { icon: "\uD83D\uDCF1", title: "Mobile Service", desc: "Can't come to us? We come to you for pre-purchase inspections and basic servicing." },
+  { key: "inspection", title: "Mobile Pre-Purchase Inspections", desc: "Buying a car? We come to you anywhere in Gold Coast and inspect it before you pay. Full report, no surprises." },
+  { key: "rental", title: "Car Rentals", desc: "Reliable cars for students, backpackers & workers. Weekly & monthly discounts." },
+  { key: "diagnostics", title: "Diagnostics & Repairs", desc: "Oil, brakes, log book services & engine diagnostics. Free initial diagnosis, fair prices." },
+  { key: "mobile", title: "Mobile Service", desc: "Can't come to us? We come to you for pre-purchase inspections and basic servicing." },
 ];
 
 const faqs = [
@@ -22,6 +22,27 @@ const fallbackImg = "/logo.png";
 const WHATSAPP = "https://wa.me/61481268633";
 const TEL = "+61481268633";
 
+// Eventos de conversión (first-party, sin terceros). Log en /api/track.
+const track = (event: string, meta?: Record<string, unknown>) => {
+  try {
+    fetch("/api/track", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ event, meta }), keepalive: true,
+    }).catch(() => {});
+  } catch { /* ignore */ }
+};
+
+// Iconos SVG (sustituyen a los emojis). Decorativos: aria-hidden.
+const svgProps = { width: 36, height: 36, viewBox: "0 0 24 24", fill: "none",
+  stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const, "aria-hidden": true, className: "text-[var(--color-primary)]" };
+const ICONS = {
+  inspection: (<svg {...svgProps}><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>),
+  rental: (<svg {...svgProps}><path d="M3 13l1.8-5h14.4L21 13v5h-2M5 18H3v-5" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></svg>),
+  diagnostics: (<svg {...svgProps}><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2L4 17l3 3 5.3-5.3a4 4 0 0 0 5.2-5.2l-2.4 2.4-2.1-.3-.3-2.1 2.3-2.4z" /></svg>),
+  mobile: (<svg {...svgProps}><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>),
+};
+
 export default function Home() {
   const [chatInput, setChatInput] = useState("");
   const [chatResponse, setChatResponse] = useState("");
@@ -29,9 +50,8 @@ export default function Home() {
   const [form, setForm] = useState({
     name: "", phone: "", email: "", service: "oil-change",
     vehicleMake: "", vehicleModel: "", vehicleYear: "", vehiclePlate: "",
-    date: "", time: "", description: "",
+    date: "", time: "", description: "", consent: false,
   });
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [bookingSent, setBookingSent] = useState(false);
   const [bookingError, setBookingError] = useState("");
   const [bookingData, setBookingData] = useState<any>(null);
@@ -86,7 +106,7 @@ export default function Home() {
       const data = await res.json();
       if (data.success) {
         setBookingData(data.booking);
-        setForm({ name: "", phone: "", email: "", service: "oil-change", vehicleMake: "", vehicleModel: "", vehicleYear: "", vehiclePlate: "", date: "", time: "", description: "" });
+        setForm({ name: "", phone: "", email: "", service: "oil-change", vehicleMake: "", vehicleModel: "", vehicleYear: "", vehiclePlate: "", date: "", time: "", description: "", consent: false });
         const sr = await fetch("/api/book");
         setSlots((await sr.json()).slots || {});
       } else setBookingError(data.error || "Error. Call +61 481 268 633");
@@ -120,7 +140,7 @@ export default function Home() {
       </nav>
 
       <section className="relative pt-28 pb-16 px-4 overflow-hidden">
-        <Image src="/banner.png" alt="GCMotors Workshop Gold Coast" fill className="object-cover" priority />
+        <Image src="/banner.png" alt="GCMotors Workshop Gold Coast" fill sizes="100vw" className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">GCMotors Workshop · Mobile Pre-Purchase Inspections, Rentals & Repairs in Gold Coast</h1>
@@ -129,7 +149,7 @@ export default function Home() {
             <a href="#contact" className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-full font-semibold">Book a Repair</a>
             <a href="#fleet" className="bg-white/90 text-slate-800 px-8 py-3 rounded-full font-semibold">Rent a Car</a>
             <a href="#used-cars" className="bg-[var(--color-accent)] text-white px-8 py-3 rounded-full font-semibold">Browse Used Cars</a>
-            <a href={WHATSAPP} target="_blank" rel="noopener" className="bg-[#25D366] text-white px-8 py-3 rounded-full font-semibold">WhatsApp us</a>
+            <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "hero" })} className="bg-[#25D366] text-white px-8 py-3 rounded-full font-semibold">WhatsApp us</a>
           </div>
         </div>
       </section>
@@ -150,7 +170,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((s, i) => (
               <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md">
-                <div className="text-4xl mb-3">{s.icon}</div>
+                <div className="mb-3">{ICONS[s.key]}</div>
                 <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
                 <p className="text-slate-500 text-sm">{s.desc}</p>
               </div>
@@ -179,7 +199,7 @@ export default function Home() {
             {fleetData.map((car, i) => (
               <div key={car.id || i} className="bg-stone-50 p-6 rounded-2xl border border-stone-200">
                 <div className="relative w-full h-40 mb-4 rounded-xl overflow-hidden bg-stone-200">
-                  <Image src={car.image || fallbackImg} alt={car.model} fill className="object-cover" />
+                  <Image src={car.image || fallbackImg} alt={car.model} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
                 </div>
                 <div className="flex justify-between items-start mb-4">
                   <div><h3 className="font-semibold text-lg">{car.model}</h3><p className="text-slate-500 text-sm">{car.type}</p></div>
@@ -207,7 +227,7 @@ export default function Home() {
           {saleData.length === 0 ? (
             <div className="max-w-md mx-auto text-center bg-stone-50 border border-stone-200 rounded-2xl p-8">
               <p className="text-slate-600 mb-4">No cars in stock right now. Tell us what you need and we&apos;ll let you know when one arrives.</p>
-              <a href={WHATSAPP} target="_blank" rel="noopener" className="inline-block bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-medium">Tell us on WhatsApp</a>
+              <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "used_cars" })} className="inline-block bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-medium">Tell us on WhatsApp</a>
               <p className="mt-3 text-xs text-slate-400">Or <a href="#contact" className="underline">leave your details</a> and we&apos;ll contact you.</p>
             </div>
           ) : (
@@ -215,7 +235,7 @@ export default function Home() {
               {saleData.map((car, i) => (
                 <div key={car.id || i} className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md">
                   <div className="relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-stone-200">
-                    <Image src={car.image || fallbackImg} alt={car.model} fill className="object-cover" />
+                    <Image src={car.image || fallbackImg} alt={car.model} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
                   </div>
                   <div className="flex justify-between items-start mb-3">
                     {car.badge && <span className="text-xs font-medium bg-amber-100 text-amber-800 px-2 py-1 rounded">{car.badge}</span>}
@@ -253,12 +273,12 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-center mb-12">FAQs</h2>
           <div className="space-y-3">
             {faqs.map((f, i) => (
-              <div key={i} className="border border-slate-600 rounded-xl overflow-hidden">
-                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-slate-700">
-                  <span className="font-medium">{f.q}</span><span className="text-amber-500">{openFaq === i ? "−" : "+"}</span>
-                </button>
-                {openFaq === i && <div className="px-6 pb-4 text-slate-300 text-sm">{f.a}</div>}
-              </div>
+              <details key={i} className="border border-slate-600 rounded-xl overflow-hidden">
+                <summary className="px-6 py-4 cursor-pointer flex justify-between items-center hover:bg-slate-700">
+                  <span className="font-medium">{f.q}</span><span className="text-amber-500">+</span>
+                </summary>
+                <div className="px-6 pb-4 text-slate-300 text-sm">{f.a}</div>
+              </details>
             ))}
           </div>
         </div>
@@ -273,7 +293,7 @@ export default function Home() {
             Currumbin · Coolangatta · Robina · Varsity Lakes · Nerang · Ashmore · Helensvale · Coomera · Pimpama ·
             Hope Island · Runaway Bay · Labrador · Biggera Waters
           </p>
-          <a href={WHATSAPP} target="_blank" rel="noopener" className="inline-block mt-6 bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-medium">Ask about your suburb on WhatsApp</a>
+          <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "areas" })} className="inline-block mt-6 bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-medium">Ask about your suburb on WhatsApp</a>
         </div>
       </section>
 
@@ -374,6 +394,11 @@ export default function Home() {
                   className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)] resize-none" />
               </div>
 
+              <label className="flex items-start gap-2 text-xs text-slate-500">
+                <input type="checkbox" required checked={form.consent} onChange={e => setForm({ ...form, consent: e.target.checked })} className="mt-0.5" />
+                <span>I agree to the <a href="/privacy" className="underline">privacy policy</a> and consent to being contacted about my booking.</span>
+              </label>
+
               {bookingError && <p className="text-red-600 text-sm">{bookingError}</p>}
               <button type="submit" disabled={!form.date || !form.time}
                 className="w-full bg-[var(--color-primary)] text-white py-3 rounded-xl font-semibold disabled:opacity-50">
@@ -393,6 +418,16 @@ export default function Home() {
         <p>Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia</p>
         <p className="mt-2">📞 <a href="tel:+61481268633" className="hover:underline">+61 481 268 633</a> · ✉️ <a href="mailto:info@gcmotors-workshop.com" className="hover:underline">info@gcmotors-workshop.com</a></p>
         <p className="mt-2 text-xs">&copy; 2026 GCMotors Workshop | Gold Coast</p>
+        <p className="mt-2 text-xs">
+          <a href="/privacy" className="hover:underline">Privacy</a> ·{" "}
+          <a href="/terms" className="hover:underline">Terms</a> ·{" "}
+          <a href="/rental-terms" className="hover:underline">Rental terms</a>
+        </p>
+        {process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL && (
+          <p className="mt-2 text-xs">
+            <a href={process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL} target="_blank" rel="noopener" className="hover:underline">Leave a Google review</a>
+          </p>
+        )}
       </footer>
 
       <a
@@ -400,6 +435,7 @@ export default function Home() {
         target="_blank"
         rel="noopener"
         aria-label="WhatsApp"
+        onClick={() => track("click_whatsapp", { where: "floating" })}
         className="hidden md:flex fixed bottom-6 left-6 z-40 w-14 h-14 bg-[#25D366] rounded-full shadow-lg items-center justify-center text-white text-2xl hover:scale-105 active:scale-95 transition"
       >
         💬
@@ -414,8 +450,8 @@ export default function Home() {
       </button>
 
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 grid grid-cols-3 bg-white border-t border-stone-200 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
-        <a href={`tel:${TEL}`} className="py-3 text-center text-sm font-medium text-slate-700">📞 Call</a>
-        <a href={WHATSAPP} target="_blank" rel="noopener" className="py-3 text-center text-sm font-semibold text-white bg-[#25D366]">💬 WhatsApp</a>
+        <a href={`tel:${TEL}`} onClick={() => track("click_call", { where: "mobile_bar" })} className="py-3 text-center text-sm font-medium text-slate-700">📞 Call</a>
+        <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "mobile_bar" })} className="py-3 text-center text-sm font-semibold text-white bg-[#25D366]">💬 WhatsApp</a>
         <a href="#contact" className="py-3 text-center text-sm font-semibold text-white bg-[var(--color-primary)]">📅 Book</a>
       </div>
 

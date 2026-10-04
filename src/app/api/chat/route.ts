@@ -1,95 +1,107 @@
 import { NextRequest, NextResponse } from "next/server";
+import { appendFile, mkdir } from "fs/promises";
+import path from "path";
 
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
+const DIR = path.join(process.cwd(), "data");
+const LOG = path.join(DIR, "chat.jsonl");
 
-const DIAGNOSIS_PROMPT = `You are an expert mechanic from Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia. Labor rate: $120 AUD/hour.
+// Rate-limit simple en memoria: máx 12 mensajes / 5 min por IP.
+const HITS: Map<string, number[]> = new Map();
+const WINDOW_MS = 5 * 60 * 1000;
+const MAX = 12;
+function limited(ip: string): boolean {
+  const now = Date.now();
+  const arr = (HITS.get(ip) || []).filter((t) => now - t < WINDOW_MS);
+  arr.push(now);
+  HITS.set(ip, arr);
+  return arr.length > MAX;
+}
 
-Analyze the customer's problem and provide:
-1. Possible cause (1-2 sentences)
-2. Related services (eg: oil change, brake pads, battery)
-3. Estimated cost in AUD (include parts + labor at $120/h)
-4. If urgent appointment needed
+const DISCLAIMER =
+  "\n\n— Indicative only, not a quote. Exact prices and availability are on the price list or via WhatsApp.";
 
-Respond in the same language as the customer (English or Spanish). Clear, professional, and friendly.
-
-Ejemplo en español: "⚠️ Posible: Pastillas de freno desgastadas. Coste estimado: $150-300 AUD (incluye mano de obra a $120/h). ¿Quieres agendar?"`;
+const DIAGNOSIS_PROMPT = `You are a friendly mechanic assistant for GCMotors Workshop (Gold Coast, QLD, Australia).
+Help the customer understand a possible cause and which service is likely relevant.
+Do NOT give firm prices and do NOT confirm availability: at most a rough INDICATIVE range, and tell them the exact price is on the price list or via WhatsApp. Never promise a booking time.
+Respond in the SAME language as the customer (English or Spanish). Clear, professional, brief (max 3 sentences).`;
 
 export async function POST(req: NextRequest) {
+  const ip = (req.headers.get("x-forwarded-for") || "unknown").split(",")[0].trim();
+  if (limited(ip)) {
+    return NextResponse.json(
+      { reply: "Too many messages. Please use WhatsApp: https://wa.me/61481268633" },
+      { status: 429 });
+  }
   try {
-    const { message } = await req.json();
+    const body = await req.json();
+    const raw = String(body?.message || "").trim();
+    if (!raw) return NextResponse.json({ reply: "Please describe your issue." });
+    const message = raw.slice(0, 500);
 
-    if (!message?.trim()) {
-      return NextResponse.json({ reply: "Please describe your issue" });
-    }
-
+    let reply: string;
     if (!OPENAI_KEY) {
-      const fallbackReply = diagnoseFallback(message);
-      return NextResponse.json({ reply: fallbackReply });
+      reply = diagnoseFallback(message);
+    } else {
+      const r = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${OPENAI_KEY}` },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: DIAGNOSIS_PROMPT },
+            { role: "user", content: message },
+          ],
+          max_tokens: 200,
+        }),
+      });
+      const data = await r.json();
+      reply = data.choices?.[0]?.message?.content || diagnoseFallback(message);
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: DIAGNOSIS_PROMPT },
-          { role: "user", content: message },
-        ],
-        max_tokens: 200,
-      }),
-    });
+    // Registro revisable por el taller (sin otras cabeceras ni IP).
+    try {
+      await mkdir(DIR, { recursive: true });
+      await appendFile(LOG, JSON.stringify({ ts: new Date().toISOString(), message, reply }) + "\n");
+    } catch { /* log opcional */ }
 
-    const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || diagnoseFallback(message);
-
-    return NextResponse.json({ reply });
-  } catch (error) {
-    return NextResponse.json({ reply: "⚠️ Error. Call +61 481 268 633 / Llama al +61 481 268 633" });
+    return NextResponse.json({ reply: reply + DISCLAIMER });
+  } catch {
+    return NextResponse.json({ reply: "⚠️ Error. Please call +61 481 268 633 or use WhatsApp." });
   }
 }
 
 function diagnoseFallback(message: string): string {
   const m = message.toLowerCase();
   const es = /[áéíóúñ¿¡]/i.test(m) || m.includes("freno") || m.includes("aceite") || m.includes("ruido");
-  const l = (en: string, es: string) => es ? es : en;
+  const l = (en: string, es_: string) => (es ? es_ : en);
+  const CTA = (en: string, es_: string) => l(en + " For a quote, see the price list or WhatsApp.", es_ + " Para el precio, mira la tabla o WhatsApp.");
 
   if (m.includes("brake") || m.includes("freno") || m.includes("noise") || m.includes("ruido") || m.includes("stopping") || m.includes("frenar")) {
-    return l("🔧 Possible: Worn brake pads. Cost: $150-300 AUD (incl. $120/h labor). Book a time?",
-             "🔧 Posible: Pastillas de freno desgastadas. Coste: $150-300 AUD (incl. mano de obra $120/h). ¿Agendamos?");
+    return CTA("Possible worn brake pads — we confirm on inspection.", "Posible desgaste de pastillas de freno: lo confirmamos al inspeccionar.");
   }
   if (m.includes("start") || m.includes("battery") || m.includes("batería") || m.includes("won't start") || m.includes("no arranca")) {
-    return l("🔧 Possible: Flat/defective battery. Cost: $150-250 AUD (incl. $120/h labor). Book a time?",
-             "🔧 Posible: Batería descargada/defectuosa. Coste: $150-250 AUD (incl. mano de obra $120/h). ¿Agendamos?");
+    return CTA("Possible flat or weak battery.", "Posible batería descargada o débil.");
   }
   if (m.includes("oil") || m.includes("aceite") || m.includes("leak") || m.includes("pérdida") || m.includes("burning") || m.includes("quema")) {
-    return l("🔧 Possible: Oil leak or low oil. Inspection: $80-150 AUD. Book a time?",
-             "🔧 Posible: Pérdida de aceite o nivel bajo. Inspección: $80-150 AUD. ¿Agendamos?");
+    return CTA("Possible oil leak or low oil level.", "Posible pérdida de aceite o nivel bajo.");
   }
   if (m.includes("engine") || m.includes("motor") || m.includes("hot") || m.includes("caliente") || m.includes("overheat") || m.includes("sobrecalienta")) {
-    return l("🔧 Possible: Overheating. URGENT: call +61 481 268 633 now",
-             "🔧 Posible: Sobrecalentamiento. URGENTE: llama ahora al +61 481 268 633");
+    return l("Possible overheating. URGENT: call +61 481 268 633 now.",
+             "Posible sobrecalentamiento. URGENTE: llama ahora al +61 481 268 633.");
   }
   if (m.includes("tire") || m.includes("neumático") || m.includes("puncture") || m.includes("pinchazo") || m.includes("flat") || m.includes("desinflado")) {
-    return l("🔧 Possible: Puncture or low pressure. Cost: $30-80 AUD. Book a time?",
-             "🔧 Posible: Pinchazo o presión baja. Coste: $30-80 AUD. ¿Agendamos?");
+    return CTA("Possible puncture or low tyre pressure.", "Posible pinchazo o presión baja.");
   }
   if (m.includes("steering") || m.includes("dirección") || m.includes("wheel") || m.includes("rueda") || m.includes("pull") || m.includes("tira")) {
-    return l("🔧 Possible: Wheel alignment or power steering. Cost: $80-150 AUD. Book a time?",
-             "🔧 Posible: Alineación o dirección. Coste: $80-150 AUD. ¿Agendamos?");
+    return CTA("Possible wheel alignment or power-steering issue.", "Posible alineación o problema de dirección.");
   }
   if (m.includes("clutch") || m.includes("embrague") || m.includes("gear") || m.includes("marcha") || m.includes("shift") || m.includes("cambio")) {
-    return l("🔧 Possible: Clutch issue. Inspection: $100-200 AUD. Book a time?",
-             "🔧 Posible: Problema de embrague. Inspección: $100-200 AUD. ¿Agendamos?");
+    return CTA("Possible clutch issue.", "Posible problema de embrague.");
   }
   if (m.includes("ac") || m.includes("aire") || m.includes("air") || m.includes("heat") || m.includes("calefacción") || m.includes("cooling") || m.includes("refrigeración")) {
-    return l("🔧 Possible: AC system issue. Cost: $100-300 AUD. Book a time?",
-             "🔧 Posible: Problema de aire acondicionado. Coste: $100-300 AUD. ¿Agendamos?");
+    return CTA("Possible air-conditioning issue.", "Posible problema de aire acondicionado.");
   }
-  
-  return l("🔧 Describe more symptoms for an estimate. Or call +61 481 268 633",
-           "🔧 Describe más síntomas para un presupuesto. O llama al +61 481 268 633");
+  return l("Tell us more symptoms for a better guess. For a quote, see the price list or WhatsApp. Or call +61 481 268 633.",
+           "Cuéntanos más síntomas para afinar. Para el precio, mira la tabla o WhatsApp. O llama al +61 481 268 633.");
 }
