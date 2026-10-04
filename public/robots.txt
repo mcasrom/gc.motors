@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://gc.motors.viajeinteligencia.com/sitemap.xml
+Sitemap: https://gcmotors-workshop.com/sitemap.xml

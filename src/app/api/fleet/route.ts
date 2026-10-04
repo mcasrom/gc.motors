@@ -5,7 +5,7 @@ import path from "path";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const FLEET_FILE = path.join(DATA_DIR, "fleet.json");
-const ADMIN_PIN = "2026";
+const ADMIN_PIN = process.env.GC_ADMIN_PIN || "";
 
 interface Car {
   id: string; model: string; type: string; price: number;

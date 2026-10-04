@@ -30,7 +30,7 @@ const services: Record<string, string> = {
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [authed, setAuthed] = useState(false);
-  const ADMIN_PIN = "2026";
+  const [pinError, setPinError] = useState("");
   const headers = { Authorization: `Bearer ${password}`, "Content-Type": "application/json" };
   const [tab, setTab] = useState("agenda");
 
@@ -119,9 +119,17 @@ export default function AdminPage() {
 
   if (!authed) return (
     <div className="min-h-screen flex items-center justify-center bg-slate-900">
-      <form onSubmit={(e) => { e.preventDefault(); password === ADMIN_PIN && setAuthed(true); }} className="bg-white p-8 rounded-2xl">
-        <h1 className="text-xl font-bold mb-4">GC Motors Admin</h1>
+      <form onSubmit={async (e) => {
+        e.preventDefault();
+        setPinError("");
+        try {
+          const r = await fetch("/api/jobs", { headers: { Authorization: `Bearer ${password}` } });
+          if (r.ok) setAuthed(true); else setPinError("PIN incorrecto");
+        } catch { setPinError("Error de conexión"); }
+      }} className="bg-white p-8 rounded-2xl">
+        <h1 className="text-xl font-bold mb-4">GCMotors Workshop Admin</h1>
         <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="PIN" className="w-full px-4 py-3 border rounded-xl mb-4" />
+        {pinError && <p className="text-red-600 text-sm mb-3">{pinError}</p>}
         <button className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold">Enter</button>
       </form>
     </div>

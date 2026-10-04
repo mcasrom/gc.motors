@@ -4,10 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 const services = [
-  { icon: "\uD83D\uDD27", title: "Repairs", desc: "Oil change, brakes, diagnostics, log book services & pre-purchase inspections." },
-  { icon: "\uD83D\uDE97", title: "Rentals", desc: "Reliable cars for students, backpackers & workers. Weekly & monthly discounts." },
-  { icon: "\uD83D\uDCB0", title: "Used Cars", desc: "Quality inspected vehicles under $10K. First car? We help you choose." },
-  { icon: "\uD83D\uDD04", title: "Loan Vehicle", desc: "Free loan car while we fix yours. Stay mobile, no extra cost." },
+  { icon: "\uD83D\uDD0D", title: "Mobile Pre-Purchase Inspections", desc: "Buying a car? We come to you anywhere in Gold Coast and inspect it before you pay. Full report, no surprises." },
+  { icon: "\uD83D\uDE97", title: "Car Rentals", desc: "Reliable cars for students, backpackers & workers. Weekly & monthly discounts." },
+  { icon: "\uD83D\uDD27", title: "Diagnostics & Repairs", desc: "Oil, brakes, log book services & engine diagnostics. Free initial diagnosis, fair prices." },
+  { icon: "\uD83D\uDCF1", title: "Mobile Service", desc: "Can't come to us? We come to you for pre-purchase inspections and basic servicing." },
 ];
 
 const faqs = [
@@ -67,7 +67,7 @@ export default function Home() {
     setLoading(true); setChatResponse("");
     try {
       const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: chatInput }) });
-      setChatResponse((await res.json()).reply || "Contact us at +61 7 1234 5678");
+      setChatResponse((await res.json()).reply || "Contact us at +61 481 268 633");
     } catch { setChatResponse("Describe your issue and we'll help you out."); }
     setLoading(false);
   };
@@ -87,8 +87,8 @@ export default function Home() {
         setForm({ name: "", phone: "", email: "", service: "oil-change", vehicleMake: "", vehicleModel: "", vehicleYear: "", vehiclePlate: "", date: "", time: "", description: "" });
         const sr = await fetch("/api/book");
         setSlots((await sr.json()).slots || {});
-      } else setBookingError(data.error || "Error. Call +61 7 1234 5678");
-    } catch { setBookingError("Connection error. Call +61 7 1234 5678"); }
+      } else setBookingError(data.error || "Error. Call +61 481 268 633");
+    } catch { setBookingError("Connection error. Call +61 481 268 633"); }
   };
 
   const faqLd = {
@@ -102,8 +102,8 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
           <a href="#" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="GC Motors" width={38} height={29} className="object-contain" />
-            <span className="text-lg font-bold text-[var(--color-primary)]">GC Motors</span>
+            <Image src="/logo.png" alt="GCMotors Workshop" width={38} height={29} className="object-contain" />
+            <span className="text-lg font-bold text-[var(--color-primary)]">GCMotors Workshop</span>
           </a>
           <div className="hidden md:flex gap-6 text-sm font-medium">
             <a href="#services" className="hover:text-[var(--color-primary)]">Services</a>
@@ -118,11 +118,11 @@ export default function Home() {
       </nav>
 
       <section className="relative pt-28 pb-16 px-4 overflow-hidden">
-        <Image src="/banner.png" alt="GC Motors Gold Coast" fill className="object-cover" priority />
+        <Image src="/banner.png" alt="GCMotors Workshop Gold Coast" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">GC Motors · Auto Repair, Rental & Used Cars in Gold Coast</h1>
-          <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto drop-shadow">Repairs · Rentals · Used Cars — for students, backpackers & locals. AI diagnosis, fair prices, no surprises.</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">GCMotors Workshop · Mobile Pre-Purchase Inspections, Rentals & Repairs in Gold Coast</h1>
+          <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto drop-shadow">Mobile inspections · Car rentals · Diagnostics & repairs — for students, backpackers & locals. Fair prices, no surprises.</p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a href="#contact" className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-full font-semibold">Book a Repair</a>
             <a href="#fleet" className="bg-white/90 text-slate-800 px-8 py-3 rounded-full font-semibold">Rent a Car</a>
@@ -380,17 +380,17 @@ export default function Home() {
             </form>
           )}
           <div className="text-center mt-6 text-sm text-slate-500">
-            <p>Gold Coast, Queensland, Australia</p>
-            <p>+61 7 1234 5678 · gcmotors@viajeinteligencia.com</p>
+            <p>Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia</p>
+            <p>+61 481 268 633 · info@gcmotors-workshop.com</p>
             <p className="mt-2">Hablo español · Falo portugues</p>
           </div>
         </div>
       </section>
 
       <footer className="py-8 px-4 bg-slate-900 text-slate-400 text-sm text-center">
-        <p>Gold Coast, Queensland, Australia</p>
-        <p className="mt-2">+61 7 1234 5678 · gcmotors@viajeinteligencia.com</p>
-        <p className="mt-2 text-xs">&copy; 2026 GC Motors | Gold Coast</p>
+        <p>Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia</p>
+        <p className="mt-2">+61 481 268 633 · info@gcmotors-workshop.com</p>
+        <p className="mt-2 text-xs">&copy; 2026 GCMotors Workshop | Gold Coast</p>
       </footer>
 
       <button
@@ -417,14 +417,14 @@ export default function Home() {
               ✕
             </button>
             <div className="text-center">
-              <Image src="/logo.png" alt="GC Motors" width={80} height={61} className="mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-slate-800">GC Motors</h3>
+              <Image src="/logo.png" alt="GCMotors Workshop" width={80} height={61} className="mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-slate-800">GCMotors Workshop</h3>
               <p className="text-sm text-teal-600 font-medium mb-4">Gold Coast Auto Hub</p>
               <div className="space-y-3 text-sm text-slate-600">
                 <p>🔧 Repairs · 🚗 Rentals · 💰 Used Cars</p>
-                <p>📍 Gold Coast, QLD, Australia</p>
-                <p>📞 +61 7 1234 5678</p>
-                <p>✉️ gcmotors@viajeinteligencia.com</p>
+                <p>📍 Unit 3G, 31 Rudman Parade, Gold Coast QLD</p>
+                <p>📞 +61 481 268 633</p>
+                <p>✉️ info@gcmotors-workshop.com</p>
                 <p className="text-xs text-slate-400">🇪🇸 Hablamos español · 🇧🇷 Falamos português</p>
               </div>
               <a

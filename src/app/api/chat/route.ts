@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
 
-const DIAGNOSIS_PROMPT = `You are an expert mechanic from Gold Coast, Queensland, Australia. Labor rate: $120 AUD/hour.
+const DIAGNOSIS_PROMPT = `You are an expert mechanic from Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia. Labor rate: $120 AUD/hour.
 
 Analyze the customer's problem and provide:
 1. Possible cause (1-2 sentences)
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ reply });
   } catch (error) {
-    return NextResponse.json({ reply: "⚠️ Error. Call +61 7 1234 5678 / Llama al +61 7 1234 5678" });
+    return NextResponse.json({ reply: "⚠️ Error. Call +61 481 268 633 / Llama al +61 481 268 633" });
   }
 }
 
@@ -70,8 +70,8 @@ function diagnoseFallback(message: string): string {
              "🔧 Posible: Pérdida de aceite o nivel bajo. Inspección: $80-150 AUD. ¿Agendamos?");
   }
   if (m.includes("engine") || m.includes("motor") || m.includes("hot") || m.includes("caliente") || m.includes("overheat") || m.includes("sobrecalienta")) {
-    return l("🔧 Possible: Overheating. URGENT: call +61 7 1234 5678 now",
-             "🔧 Posible: Sobrecalentamiento. URGENTE: llama ahora al +61 7 1234 5678");
+    return l("🔧 Possible: Overheating. URGENT: call +61 481 268 633 now",
+             "🔧 Posible: Sobrecalentamiento. URGENTE: llama ahora al +61 481 268 633");
   }
   if (m.includes("tire") || m.includes("neumático") || m.includes("puncture") || m.includes("pinchazo") || m.includes("flat") || m.includes("desinflado")) {
     return l("🔧 Possible: Puncture or low pressure. Cost: $30-80 AUD. Book a time?",
@@ -90,6 +90,6 @@ function diagnoseFallback(message: string): string {
              "🔧 Posible: Problema de aire acondicionado. Coste: $100-300 AUD. ¿Agendamos?");
   }
   
-  return l("🔧 Describe more symptoms for an estimate. Or call +61 7 1234 5678",
-           "🔧 Describe más síntomas para un presupuesto. O llama al +61 7 1234 5678");
+  return l("🔧 Describe more symptoms for an estimate. Or call +61 481 268 633",
+           "🔧 Describe más síntomas para un presupuesto. O llama al +61 481 268 633");
 }

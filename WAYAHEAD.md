@@ -1,9 +1,9 @@
-# WAYAHEAD — GC Motors | Gold Coast
+# WAYAHEAD — GCMotors Workshop | Gold Coast
 
 ## ✅ Completed — Project Live & Functional
 
 ### Deployed Features
-- [x] Landing page with brand "GC Motors | Gold Coast"
+- [x] Landing page with brand "GCMotors Workshop | Gold Coast"
 - [x] Three business lines: Repair, Rental, Used Cars
 - [x] AI chatbot with fallback
 - [x] Booking form with vehicle info (make, model, year, plate)
@@ -20,7 +20,7 @@
 - [x] SSL via Let's Encrypt + Cloudflare proxy
 - [x] logo.png as favicon, OG image, fallback thumbnail
 - [x] SEO metadata + keywords
-- [x] Deployed to Hetzner (https://gc.motors.viajeinteligencia.com)
+- [x] Deployed to Hetzner (https://gcmotors-workshop.com)
 - [x] GitHub repo: https://github.com/mcasrom/gc.motors
 
 ### Tech Stack
@@ -35,7 +35,7 @@
 - Local residents
 
 ### Admin Access
-- URL: `https://gc.motors.viajeinteligencia.com/admin`
+- URL: `https://gcmotors-workshop.com/admin`
 - PIN: `2026`
 
 ### Future Ideas (not planned)

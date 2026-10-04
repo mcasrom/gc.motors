@@ -15,27 +15,26 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gc.motors.viajeinteligencia.com"),
-  title: "GC Motors | Gold Coast - Car Repair, Rental & Used Cars",
-  description: "Auto repair, car rental & used cars in Gold Coast. AI diagnosis, student-friendly pricing, log book services, pre-purchase inspections. Trusted by international students and backpackers.",
+  metadataBase: new URL("https://gcmotors-workshop.com"),
+  title: "GCMotors Workshop | Gold Coast - Mobile Pre-Purchase Inspections, Rentals & Repairs",
+  description: "Mobile pre-purchase inspections, car rentals and vehicle diagnostics & repairs in Gold Coast. Student-friendly pricing, log book services. Trusted by international students and backpackers.",
   keywords: [
-    "car repair Gold Coast", "car rental Gold Coast", "used cars Gold Coast",
-    "cheap mechanic Gold Coast", "student car rental", "backpacker cars",
-    "log book service Gold Coast", "pre-purchase inspection",
-    "first car Australia", "cheap car hire Gold Coast",
+    "mobile pre-purchase inspection Gold Coast", "car rental Gold Coast", "vehicle diagnostics Gold Coast",
+    "car repair Gold Coast", "cheap mechanic Gold Coast", "student car rental", "backpacker cars",
+    "log book service Gold Coast", "pre-purchase inspection", "cheap car hire Gold Coast",
   ],
   openGraph: {
-    title: "GC Motors | Gold Coast - Auto Repair, Rental & Used Cars",
-    description: "Your trusted auto hub in Gold Coast. Repairs, rentals and used cars for students, backpackers and locals.",
+    title: "GCMotors Workshop | Gold Coast - Mobile Inspections, Rentals & Repairs",
+    description: "Mobile pre-purchase inspections, car rentals and diagnostics & repairs in Gold Coast, for students, backpackers and locals.",
     type: "website",
     locale: "en_AU",
-    images: [{ url: "/logo.png", width: 771, height: 1024, alt: "GC Motors Gold Coast" }],
+    images: [{ url: "/logo.png", width: 771, height: 1024, alt: "GCMotors Workshop Gold Coast" }],
   },
   robots: { index: true, follow: true },
   icons: { icon: "/logo.png", apple: "/logo.png" },
 };
 
-const localBusinessSchema = {"@context": "https://schema.org", "@type": "AutoRepair", "name": "GC Motors", "url": "https://gc.motors.viajeinteligencia.com", "image": "https://gc.motors.viajeinteligencia.com/logo.png", "description": "Car repair, car rental & used cars in Gold Coast. AI diagnosis, student-friendly pricing, log book services, pre-purchase inspections.", "priceRange": "$$", "address": {"@type": "PostalAddress", "addressLocality": "Gold Coast", "addressCountry": "AU"}, "areaServed": {"@type": "Place", "name": "Gold Coast"}};
+const localBusinessSchema = {"@context": "https://schema.org", "@type": "AutoRepair", "name": "GCMotors Workshop", "url": "https://gcmotors-workshop.com", "image": "https://gcmotors-workshop.com/logo.png", "telephone": "+61 481 268 633", "email": "info@gcmotors-workshop.com", "description": "Mobile pre-purchase inspections, car rentals and vehicle diagnostics & repairs in Gold Coast. Student-friendly pricing, log book services.", "priceRange": "$$", "address": {"@type": "PostalAddress", "streetAddress": "Unit 3G, 31 Rudman Parade", "addressLocality": "Gold Coast", "addressRegion": "QLD", "addressCountry": "AU"}, "areaServed": {"@type": "Place", "name": "Gold Coast"}};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

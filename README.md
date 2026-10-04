@@ -2,7 +2,7 @@
 
 ## Overview
 
-Smart car repair + rental business in Gold Coast, Queensland, Australia. AI-powered diagnosis, online booking, 20+ vehicle fleet.
+Smart car repair + rental business in Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia. AI-powered diagnosis, online booking, 20+ vehicle fleet.
 
 ## Tech Stack
 
@@ -69,9 +69,9 @@ OPENAI_API_KEY=sk-...
 
 ## Contact
 
-- Phone: +61 7 1234 5678
-- Email: info@fixrentgoldcoast.com.au
-- Address: Gold Coast, Queensland, Australia
+- Phone: +61 481 268 633
+- Email: info@gcmotors-workshop.com
+- Address: Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia
 
 ## License
 

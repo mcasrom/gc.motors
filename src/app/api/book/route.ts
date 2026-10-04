@@ -27,7 +27,7 @@ async function writeJSON(file: string, data: any[]) {
   await writeFile(file, JSON.stringify(data, null, 2));
 }
 
-const ADMIN_PIN = "2026";
+const ADMIN_PIN = process.env.GC_ADMIN_PIN || "";
 const isAdmin = (auth: string | null) =>
   auth === `Bearer ${process.env.CRON_SECRET}` || auth === `Bearer ${ADMIN_PIN}`;
 

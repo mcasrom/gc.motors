@@ -3,7 +3,7 @@
 ## Project
 - **Name**: GC Auto | Gold Coast
 - **Stack**: Next.js 16, Tailwind CSS v4, TypeScript
-- **Hosting**: Hetzner (https://gc.motors.viajeinteligencia.com)
+- **Hosting**: Hetzner (https://gcmotors-workshop.com)
 - **AI**: OpenAI API (optional, fallback built-in)
 - **Logo**: `GC_logo.png` (JPEG, 771x1024) en `/public/`
 

@@ -40,5 +40,5 @@ vercel --prod --force
 ```
 
 ## Contact
-- Phone: +61 7 1234 5678
-- Email: gcmotors@viajeinteligencia.com
+- Phone: +61 481 268 633
+- Email: info@gcmotors-workshop.com
