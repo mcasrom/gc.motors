@@ -40,6 +40,7 @@ export default function AdminPage() {
   const [jobTab, setJobTab] = useState("pending");
 
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [stats, setStats] = useState<any>(null);
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
   const [jobNotes, setJobNotes] = useState("");
 
@@ -61,6 +62,11 @@ export default function AdminPage() {
     fetch("/api/fleet", { headers }).then(r => r.json()).then(d => setFleet(d.fleet || []));
     fetch("/api/sales", { headers }).then(r => r.json()).then(d => setSales(d.sales || []));
   }, [authed]);
+
+  useEffect(() => {
+    if (!authed || tab !== "web") return;
+    fetch("/api/stats", { headers }).then(r => r.json()).then(setStats).catch(() => {});
+  }, [authed, tab]);
 
   const updateStatus = async (id: string, status: string) => {
     await fetch("/api/book", { method: "PATCH", headers, body: JSON.stringify({ id, status }) });
@@ -161,6 +167,7 @@ export default function AdminPage() {
           {tabBtn("fleet", "Flota")}
           {tabBtn("sales", "Venta")}
           {tabBtn("customers", "Clientes")}
+          {tabBtn("web", "Web")}
         </div>
 
         {tab === "agenda" && (
@@ -266,6 +273,38 @@ export default function AdminPage() {
               {jobFiltered.length === 0 && <p className="text-slate-400 text-center py-12">Sin trabajos</p>}
             </div>
           </>
+        )}
+
+        {tab === "web" && (
+          <div className="bg-white rounded-2xl p-6 border shadow-sm">
+            <h2 className="text-xl font-bold mb-4">Conversiones web</h2>
+            {!stats ? <p className="text-slate-400">Cargando…</p> : (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  {Object.entries(stats.by_event || {}).map(([k, v]) => (
+                    <div key={k} className="bg-stone-50 rounded-xl p-4 text-center">
+                      <div className="text-2xl font-bold text-teal-700">{String(v)}</div>
+                      <div className="text-xs text-slate-500">{k}</div>
+                    </div>
+                  ))}
+                  {Object.keys(stats.by_event || {}).length === 0 && <p className="text-slate-400">Sin eventos todavía.</p>}
+                </div>
+                <h3 className="font-semibold mb-2 text-sm text-slate-600">Últimos días</h3>
+                <table className="w-full text-sm">
+                  <thead><tr className="text-slate-400 text-left"><th className="py-1">Fecha</th><th>Eventos</th></tr></thead>
+                  <tbody>
+                    {(stats.by_day || []).slice().reverse().map((d: any) => (
+                      <tr key={d.date} className="border-t border-stone-100">
+                        <td className="py-1">{d.date}</td>
+                        <td className="text-slate-600">{Object.entries(d.counts).map(([k, v]) => `${k}: ${v}`).join(" · ")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="text-xs text-slate-400 mt-3">Total: {stats.total} eventos · datos propios, sin cookies de terceros.</p>
+              </>
+            )}
+          </div>
         )}
 
         {tab === "customers" && (
