@@ -19,6 +19,8 @@ const faqs = [
 ];
 
 const fallbackImg = "/logo.png";
+const WHATSAPP = "https://wa.me/61481268633";
+const TEL = "+61481268633";
 
 export default function Home() {
   const [chatInput, setChatInput] = useState("");
@@ -97,7 +99,7 @@ export default function Home() {
     "mainEntity": faqs.map(f => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
   return (
-    <div className="min-h-screen bg-[var(--color-surface)] font-body text-[var(--color-foreground)]">
+    <div className="min-h-screen bg-[var(--color-surface)] font-body text-[var(--color-foreground)] pb-16 md:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
@@ -127,6 +129,7 @@ export default function Home() {
             <a href="#contact" className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-full font-semibold">Book a Repair</a>
             <a href="#fleet" className="bg-white/90 text-slate-800 px-8 py-3 rounded-full font-semibold">Rent a Car</a>
             <a href="#used-cars" className="bg-[var(--color-accent)] text-white px-8 py-3 rounded-full font-semibold">Browse Used Cars</a>
+            <a href={WHATSAPP} target="_blank" rel="noopener" className="bg-[#25D366] text-white px-8 py-3 rounded-full font-semibold">WhatsApp us</a>
           </div>
         </div>
       </section>
@@ -275,6 +278,19 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="py-12 px-4 bg-stone-50">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-3">Areas We Serve</h2>
+          <p className="text-slate-500 mb-4">Mobile pre-purchase inspections, pick-up and drop-off across the Gold Coast:</p>
+          <p className="text-sm text-slate-500 leading-relaxed max-w-3xl mx-auto">
+            Southport · Surfers Paradise · Broadbeach · Mermaid Beach · Nobby Beach · Burleigh Heads · Palm Beach ·
+            Currumbin · Coolangatta · Robina · Varsity Lakes · Nerang · Ashmore · Helensvale · Coomera · Pimpama ·
+            Hope Island · Runaway Bay · Labrador · Biggera Waters
+          </p>
+          <a href={WHATSAPP} target="_blank" rel="noopener" className="inline-block mt-6 bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-medium">Ask about your suburb on WhatsApp</a>
+        </div>
+      </section>
+
       <section id="contact" ref={contactRef} className="py-16 px-4">
         <div className="max-w-xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-2">Book Online</h2>
@@ -393,13 +409,29 @@ export default function Home() {
         <p className="mt-2 text-xs">&copy; 2026 GCMotors Workshop | Gold Coast</p>
       </footer>
 
+      <a
+        href={WHATSAPP}
+        target="_blank"
+        rel="noopener"
+        aria-label="WhatsApp"
+        className="hidden md:flex fixed bottom-6 left-6 z-40 w-14 h-14 bg-[#25D366] rounded-full shadow-lg items-center justify-center text-white text-2xl hover:scale-105 active:scale-95 transition"
+      >
+        💬
+      </a>
+
       <button
         onClick={() => setShowCard(true)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-white rounded-2xl shadow-lg border border-stone-200 flex items-center justify-center text-2xl hover:shadow-xl hover:scale-105 active:scale-95 transition-all animate-pulse hover:animate-none"
+        className="hidden md:flex fixed bottom-6 right-6 z-40 w-14 h-14 bg-white rounded-2xl shadow-lg border border-stone-200 items-center justify-center text-2xl hover:shadow-xl hover:scale-105 active:scale-95 transition-all animate-pulse hover:animate-none"
         title="Business Card"
       >
         🪪
       </button>
+
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 grid grid-cols-3 bg-white border-t border-stone-200 shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
+        <a href={`tel:${TEL}`} className="py-3 text-center text-sm font-medium text-slate-700">📞 Call</a>
+        <a href={WHATSAPP} target="_blank" rel="noopener" className="py-3 text-center text-sm font-semibold text-white bg-[#25D366]">💬 WhatsApp</a>
+        <a href="#contact" className="py-3 text-center text-sm font-semibold text-white bg-[var(--color-primary)]">📅 Book</a>
+      </div>
 
       {showCard && (
         <div

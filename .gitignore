@@ -23,6 +23,14 @@
 # user uploads
 /public/uploads/
 
+# runtime data (reservas, trabajos, ventas) — no versionar PII
+/data/bookings.json
+/data/jobs.json
+/data/sales.json
+
+# backups locales
+/backups/
+
 # misc
 .DS_Store
 *.pem

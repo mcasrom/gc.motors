@@ -26,15 +26,47 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GCMotors Workshop | Gold Coast - Mobile Inspections, Rentals & Repairs",
     description: "Mobile pre-purchase inspections, car rentals and diagnostics & repairs in Gold Coast, for students, backpackers and locals.",
+    url: "https://gcmotors-workshop.com",
+    siteName: "GCMotors Workshop",
     type: "website",
     locale: "en_AU",
     images: [{ url: "/logo.png", width: 771, height: 1024, alt: "GCMotors Workshop Gold Coast" }],
   },
+  alternates: { canonical: "https://gcmotors-workshop.com" },
+  twitter: {
+    card: "summary_large_image",
+    title: "GCMotors Workshop | Gold Coast",
+    description: "Mobile pre-purchase inspections, car rentals and diagnostics & repairs in Gold Coast.",
+    images: ["/logo.png"],
+  },
+  category: "Automotive",
+  other: { "geo.region": "AU-QLD", "geo.placename": "Gold Coast" },
   robots: { index: true, follow: true },
   icons: { icon: "/logo.png", apple: "/logo.png" },
 };
 
-const localBusinessSchema = {"@context": "https://schema.org", "@type": "AutoRepair", "name": "GCMotors Workshop", "url": "https://gcmotors-workshop.com", "image": "https://gcmotors-workshop.com/logo.png", "telephone": "+61 481 268 633", "email": "info@gcmotors-workshop.com", "description": "Mobile pre-purchase inspections, car rentals and vehicle diagnostics & repairs in Gold Coast. Student-friendly pricing, log book services.", "priceRange": "$$", "address": {"@type": "PostalAddress", "streetAddress": "Unit 3G, 31 Rudman Parade", "addressLocality": "Gold Coast", "addressRegion": "QLD", "addressCountry": "AU"}, "areaServed": {"@type": "Place", "name": "Gold Coast"}};
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": ["AutoRepair", "AutoRental"],
+  "name": "GCMotors Workshop",
+  "url": "https://gcmotors-workshop.com",
+  "image": "https://gcmotors-workshop.com/logo.png",
+  "telephone": "+61 481 268 633",
+  "email": "info@gcmotors-workshop.com",
+  "priceRange": "$$",
+  "currenciesAccepted": "AUD",
+  "paymentAccepted": "Cash, Card",
+  "knowsLanguage": ["en", "es", "pt"],
+  "description": "Mobile pre-purchase inspections, car rentals and vehicle diagnostics & repairs in Gold Coast.",
+  "address": {"@type": "PostalAddress", "streetAddress": "Unit 3G, 31 Rudman Parade", "addressLocality": "Gold Coast", "addressRegion": "QLD", "addressCountry": "AU"},
+  "areaServed": {"@type": "Place", "name": "Gold Coast"},
+  "makesOffer": [
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Mobile pre-purchase inspection"}},
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Car rental"}},
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Vehicle diagnostics and repairs"}},
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Log book service"}}
+  ]
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
