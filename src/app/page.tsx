@@ -134,14 +134,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 bg-slate-800 text-white">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div><div className="text-3xl font-bold text-amber-500">{fleetData.length}+</div><div className="text-sm text-slate-300">Fleet Vehicles</div></div>
-          <div><div className="text-3xl font-bold text-amber-500">500+</div><div className="text-sm text-slate-300">Repairs Done</div></div>
-          <div><div className="text-3xl font-bold text-amber-500">4.8★</div><div className="text-sm text-slate-300">Customer Rating</div></div>
-          <div><div className="text-3xl font-bold text-amber-500">100+</div><div className="text-sm text-slate-300">Cars Sold</div></div>
+      {fleetData.length > 0 && (
+      <section className="py-10 bg-slate-800 text-white">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <div className="text-3xl font-bold text-amber-500">{fleetData.length}</div>
+          <div className="text-sm text-slate-300">{fleetData.length === 1 ? "Rental vehicle available" : "Rental vehicles available"}</div>
         </div>
       </section>
+      )}
 
       <section id="services" className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
@@ -204,8 +204,13 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-2">Used Cars for Sale</h2>
           <p className="text-center text-slate-500 mb-4">Inspected, verified & ready to drive.</p>
-          <p className="text-center text-sm text-slate-400 mb-10">Prices from $3,200 · Financing available</p>
-          {saleData.length === 0 ? <p className="text-center text-slate-400 py-12">No vehicles available right now. Check back soon.</p> : (
+          {saleData.length === 0 ? (
+            <div className="max-w-md mx-auto text-center bg-stone-50 border border-stone-200 rounded-2xl p-8">
+              <p className="text-slate-600 mb-4">No cars in stock right now. Tell us what you need and we&apos;ll let you know when one arrives.</p>
+              <a href={WHATSAPP} target="_blank" rel="noopener" className="inline-block bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-medium">Tell us on WhatsApp</a>
+              <p className="mt-3 text-xs text-slate-400">Or <a href="#contact" className="underline">leave your details</a> and we&apos;ll contact you.</p>
+            </div>
+          ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {saleData.map((car, i) => (
                 <div key={car.id || i} className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md">
@@ -239,25 +244,6 @@ export default function Home() {
               <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} placeholder="Describe your problem..." className="flex-1 px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)]" onKeyDown={e => e.key === "Enter" && handleChat()} />
               <button onClick={handleChat} disabled={loading} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-medium disabled:opacity-50">Send</button>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { name: "Laura M.", text: "Perfect for international students. They helped with my first car purchase.", stars: "⭐⭐⭐⭐⭐", type: "Student" },
-              { name: "Carlos G.", text: "Rented for a month while working holiday. Great rates.", stars: "⭐⭐⭐⭐⭐", type: "Backpacker" },
-              { name: "Sarah K.", text: "Diagnosed my engine issue in minutes. Fair price.", stars: "⭐⭐⭐⭐", type: "Local" },
-            ].map((t, i) => (
-              <div key={i} className="bg-stone-50 p-6 rounded-2xl border border-stone-100">
-                <div className="text-amber-400 mb-2">{t.stars}</div>
-                <p className="text-slate-600 mb-3 text-sm">“{t.text}”</p>
-                <div className="flex justify-between items-center"><p className="font-medium text-sm">{t.name}</p><span className="text-xs text-[var(--color-primary)] bg-teal-50 px-2 py-0.5 rounded">{t.type}</span></div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
