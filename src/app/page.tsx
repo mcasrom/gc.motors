@@ -36,7 +36,7 @@ const track = (event: string, meta?: Record<string, unknown>) => {
 const svgProps = { width: 36, height: 36, viewBox: "0 0 24 24", fill: "none",
   stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const,
   strokeLinejoin: "round" as const, "aria-hidden": true, className: "text-[var(--color-primary)]" };
-const ICONS = {
+const ICONS: Record<string, import("react").ReactNode> = {
   inspection: (<svg {...svgProps}><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>),
   rental: (<svg {...svgProps}><path d="M3 13l1.8-5h14.4L21 13v5h-2M5 18H3v-5" /><circle cx="7" cy="18" r="2" /><circle cx="17" cy="18" r="2" /></svg>),
   diagnostics: (<svg {...svgProps}><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2L4 17l3 3 5.3-5.3a4 4 0 0 0 5.2-5.2l-2.4 2.4-2.1-.3-.3-2.1 2.3-2.4z" /></svg>),
