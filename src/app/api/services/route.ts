@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { adminGuard } from "@/lib/ratelimit";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
@@ -50,8 +51,8 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  if (!isAdmin(req.headers.get("authorization")))
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const _gate = adminGuard(req, isAdmin);
+  if (_gate) return _gate;
   const body = await req.json();
   const services = sanitize(body.services);
   if (!services.length) return NextResponse.json({ error: "No services" }, { status: 400 });

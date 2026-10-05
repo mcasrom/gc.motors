@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { adminGuard } from "@/lib/ratelimit";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
@@ -24,8 +25,8 @@ async function writeJSON(file: string, data: any[]) {
 }
 
 export async function GET(req: NextRequest) {
-  if (!isAdmin(req.headers.get("authorization")))
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const _gate = adminGuard(req, isAdmin);
+  if (_gate) return _gate;
 
   const jobs = await readJSON(JOBS_FILE);
   const bookings = await readJSON(BOOKINGS_FILE);
@@ -40,8 +41,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  if (!isAdmin(req.headers.get("authorization")))
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const _gate = adminGuard(req, isAdmin);
+  if (_gate) return _gate;
 
   const body = await req.json();
   const { id, status, assignedTo, notes, parts, labors } = body;

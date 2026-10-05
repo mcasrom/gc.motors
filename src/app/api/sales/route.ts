@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { adminGuard } from "@/lib/ratelimit";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
@@ -37,8 +38,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAdmin(req.headers.get("authorization")))
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const _gate = adminGuard(req, isAdmin);
+  if (_gate) return _gate;
   const body = await req.json();
   if (!body.model?.trim()) return NextResponse.json({ error: "Model required" }, { status: 400 });
   const sales = await readSales();
@@ -61,8 +62,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  if (!isAdmin(req.headers.get("authorization")))
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const _gate = adminGuard(req, isAdmin);
+  if (_gate) return _gate;
   const body = await req.json();
   let sales = await readSales();
   sales = sales.map(c => c.id === body.id ? { ...c, ...body, id: c.id } : c);
@@ -71,8 +72,8 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!isAdmin(req.headers.get("authorization")))
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const _gate = adminGuard(req, isAdmin);
+  if (_gate) return _gate;
   const { id } = await req.json();
   let sales = await readSales();
   sales = sales.filter(c => c.id !== id);

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { adminGuard } from "@/lib/ratelimit";
 import { readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
@@ -16,8 +17,8 @@ export async function GET(
   { params }: { params: Promise<{ phone: string }> }
 ) {
   // PII (nombre, email, vehiculo, citas): requiere autenticacion de admin.
-  if (!isAdmin(req.headers.get("authorization")))
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const _gate = adminGuard(req, isAdmin);
+  if (_gate) return _gate;
 
   const { phone } = await params;
   if (!phone) return NextResponse.json({ error: "Phone required" }, { status: 400 });

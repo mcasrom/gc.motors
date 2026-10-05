@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { adminGuard } from "@/lib/ratelimit";
 import { readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
@@ -10,8 +11,8 @@ const isAdmin = (auth: string | null) =>
   auth === `Bearer ${process.env.CRON_SECRET}` || auth === `Bearer ${ADMIN_PIN}`;
 
 export async function GET(req: NextRequest) {
-  if (!isAdmin(req.headers.get("authorization")))
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const _gate = adminGuard(req, isAdmin);
+  if (_gate) return _gate;
   try {
     if (!existsSync(EVENTS)) return NextResponse.json({ total: 0, by_event: {}, by_day: [] });
     const lines = (await readFile(EVENTS, "utf-8")).split("\n").filter(Boolean);
