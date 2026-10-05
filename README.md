@@ -66,6 +66,16 @@ scripts/backup.sh         # Copia de seguridad diaria
 - Por defecto funciona con un **motor de reglas local** (sin coste).
 - Para IA real: define `OPENAI_API_KEY` y reinicia (`pm2 restart gcmotors`).
 
+## Seguridad
+- **Panel `/admin`**: PIN validado **en servidor** (`GC_ADMIN_PIN`); los endpoints de
+  lectura de clientes (`/api/customer/[phone]`) y reservas exigen `Bearer`.
+- **Anti-fuerza-bruta** (`src/lib/ratelimit.ts`): **10 fallos de PIN por IP → 429 durante
+  15 min**; estado en `data/.ratelimit.json` (borrable; reinicia el bloqueo).
+- **Cabeceras** (`next.config.ts`): HSTS, `X-Content-Type-Options: nosniff`,
+  `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`; `poweredByHeader:false`.
+- **Dependencias**: auditoría de **producción sin vulnerabilidades** (Next 16.3.8).
+- Los ficheros de `data/` (PII) quedan fuera de `public/` y con permisos `700/600`.
+
 ## Email
 - **Resend** (dominio verificado). Cada reserva avisa desde
   `bookings@gcmotors-workshop.com` a **`rentals@`** (alquiler) o **`repairs@`**
