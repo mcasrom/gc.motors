@@ -12,9 +12,9 @@ const services = [
 
 const faqs = [
   { q: "Can I rent with an international license?", a: "Yes. With a valid IDP (International Driving Permit). Minimum age 21." },
-  { q: "Do you offer weekly discounts?", a: "Yes. Weekly rates up to 30% cheaper. Monthly rates even better." },
+  { q: "Do you offer long term rental vehicles discounts?", a: "Yes. Weekly rates up to 30% cheaper. Monthly rates even better." },
   { q: "What services do you offer?", a: "Log book services, pre-purchase inspections, repairs, rentals & used cars." },
-  { q: "Is the initial diagnosis free?", a: "Yes. We diagnose for free \u2014 you only pay for the repair." },
+  { q: "Is the initial diagnosis free?", a: "Yes. We diagnose basic mechanical and electrical problems for free — you only pay for the repair. Some issues may be more complex and may require you to leave your vehicle with us, and we may charge a small Diagnostic fee (we will always let you know beforehand when this is the case)." },
   { q: "Can first-time buyers get help?", a: "Absolutely. We guide students on choosing, inspecting, and registering their first car." },
 ];
 
@@ -191,23 +191,24 @@ export default function Home() {
       <section id="services" className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-2">What We Offer</h2>
-          <p className="text-center text-slate-500 mb-12 max-w-xl mx-auto">Three businesses, one mission: keep you moving in Gold Coast.</p>
+          <p className="text-center text-lg text-slate-700 mb-12 max-w-xl mx-auto">Three businesses, one mission: keep you moving in Gold Coast.</p>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((s, i) => (
               <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md">
                 <div className="mb-3">{ICONS[s.key]}</div>
-                <h3 className="font-semibold text-lg mb-2">{s.title}</h3>
-                <p className="text-slate-500 text-sm">{s.desc}</p>
+                <h3 className="font-bold text-xl text-slate-800 mb-2">{s.title}</h3>
+                <p className="text-slate-700 text-base">{s.desc}</p>
               </div>
             ))}
           </div>
           <div className="mt-12 bg-white rounded-2xl p-8 border border-stone-100">
-            <h3 className="font-semibold text-xl mb-4">Workshop Services</h3>
+            <h3 className="font-semibold text-xl mb-1">Workshop Services</h3>
+            <p className="text-lg text-slate-700 mb-4">Prices start from</p>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
               {serviceCatalog.filter((s: any) => !["rental", "used-car", "other"].includes(s.id)).map((s: any, i: number) => (
-                <div key={i} className="flex items-center justify-between text-slate-700 bg-stone-50 rounded-xl px-4 py-3 text-sm">
+                <div key={i} className="flex items-center justify-between text-slate-900 bg-stone-50 rounded-xl px-4 py-3.5 text-lg">
                   <span><span className="text-teal-600">✓</span> {s.name}</span>
-                  <span className="text-teal-600 font-medium">${s.price}</span>
+                  <span className="text-teal-800 font-semibold">${s.price}</span>
                 </div>
               ))}
             </div>
@@ -217,9 +218,10 @@ export default function Home() {
 
       <section id="fleet" ref={fleetRef} className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-2">Rental Fleet</h2>
-          <p className="text-center text-slate-500 mb-4">Perfect for students, backpackers & temporary workers.</p>
-          <p className="text-center text-sm text-slate-400 mb-10">Weekly discounts up to 30% · Monthly rates available</p>
+          <h2 className="text-3xl font-bold text-center mb-2">Rental fleet</h2>
+          <p className="text-center text-xl font-bold text-slate-800 mb-2">Minimum 2 weeks rental</p>
+          <p className="text-center text-xl font-bold text-slate-800 mb-4">Ask about our availability!</p>
+          <p className="text-center text-lg text-slate-700 mb-10">From small hatchbacks to large SUVs. All vehicles are insured with third party insurance; comprehensive insurance is also available for a small extra fee.</p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {fleetData.map((car, i) => (
               <div key={car.id || i} className="bg-stone-50 p-6 rounded-2xl border border-stone-200">
@@ -248,12 +250,12 @@ export default function Home() {
       <section id="used-cars" className="py-16 px-4 bg-gradient-to-b from-stone-50 to-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-2">Used Cars for Sale</h2>
-          <p className="text-center text-slate-500 mb-4">Inspected, verified & ready to drive.</p>
+          <p className="text-center text-lg text-slate-700 mb-4">Inspected, verified & ready to drive.</p>
           {saleData.length === 0 ? (
             <div className="max-w-md mx-auto text-center bg-stone-50 border border-stone-200 rounded-2xl p-8">
-              <p className="text-slate-600 mb-4">No cars in stock right now. Tell us what you need and we&apos;ll let you know when one arrives.</p>
-              <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "used_cars" })} className="inline-block bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-medium">Tell us on WhatsApp</a>
-              <p className="mt-3 text-xs text-slate-400">Or <a href="#contact" className="underline">leave your details</a> and we&apos;ll contact you.</p>
+              <p className="text-lg text-slate-700 mb-4">No cars in stock right now. Tell us what you need and we&apos;ll let you know when one arrives.</p>
+              <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "used_cars" })} className="inline-block bg-[#25D366] text-white px-6 py-2.5 rounded-full text-base font-medium">Tell us on WhatsApp</a>
+              <p className="mt-3 text-base text-slate-600">Or <a href="#contact" className="underline">leave your details</a> and we&apos;ll contact you.</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -280,10 +282,10 @@ export default function Home() {
       <section id="chat" className="py-16 px-4 bg-gradient-to-b from-stone-50 to-teal-50">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-2">AI Assistant</h2>
-          <p className="text-center text-slate-600 mb-8">Describe your issue — we'll help you right away.</p>
+          <p className="text-center text-lg text-slate-700 mb-8">Describe your issue — we'll help you right away.</p>
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-stone-100">
             <div className="mb-4 min-h-[120px] bg-stone-50 rounded-xl p-4">
-              {loading ? <p className="text-slate-400">Analyzing...</p> : chatResponse ? <p className="text-slate-700">{chatResponse}</p> : <p className="text-slate-400 text-sm">Try: "Car won't start" · "Brake noise" · "How to rent for a month"</p>}
+              {loading ? <p className="text-slate-400">Analyzing...</p> : chatResponse ? <p className="text-slate-700">{chatResponse}</p> : <p className="text-slate-600 text-base">Try: "Car won't start" · "Brake noise" · "How to rent for a month"</p>}
             </div>
             <div className="flex gap-2">
               <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} placeholder="Describe your problem..." className="flex-1 px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)]" onKeyDown={e => e.key === "Enter" && handleChat()} />

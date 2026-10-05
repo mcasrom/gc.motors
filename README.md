@@ -1,78 +1,100 @@
-# Fix & Rent Gold Coast - Project Documentation
+# GCMotors Workshop
 
-## Overview
+Web del taller **GCMotors Workshop** (Gold Coast, QLD, Australia): inspecciones
+pre-compra móviles, alquiler de coches y diagnóstico/reparación.
 
-Smart car repair + rental business in Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia. AI-powered diagnosis, online booking, 20+ vehicle fleet.
+- Producción: <https://gcmotors-workshop.com> (apex canónico; `www` → 301)
+- Teléfono: +61 481 268 633 · Email: info@gcmotors-workshop.com
+- Dirección: Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia
+- Idiomas: inglés · español · portugués
 
-## Tech Stack
+## Stack
+- **Next.js 16** (App Router) + **React 19** + **Tailwind 4**
+- SSR + **API routes** (chat IA, reservas, trabajos de taller, flota, ventas, subida de imágenes, cliente)
+- **Autoalojado** (Hetzner): PM2 `gcmotors` en el puerto `3019`, nginx + Cloudflare
+- **Sin base de datos**: ficheros `data/*.json` y subidas en `public/uploads/`
 
-| Component | Technology |
-|-----------|-----------|
-| Frontend | Next.js 15 / Tailwind CSS |
-| Backend | Next.js API Routes |
-| AI | OpenAI API / Fallback rules |
-| Deployment | Vercel |
-| Hosting | vercel.app |
-
-## Project Structure
-
+## Estructura
 ```
 src/app/
-├── page.tsx          # Landing page (all in one)
-├── layout.tsx         # Root layout + SEO metadata
-├── globals.css        # Global styles
-└── api/chat/
-    └── route.ts      # AI Chatbot endpoint
+├── page.tsx              # Landing (una sola página)
+├── layout.tsx            # Metadatos SEO + JSON-LD (AutoRepair/AutoRental)
+├── admin/page.tsx        # Panel de administración (PIN)
+├── about/ privacy/ terms/ rental-terms/
+└── api/
+    ├── chat/             # Asistente (OpenAI o motor de reglas)
+    ├── book/ jobs/       # Reservas y órdenes de taller
+    ├── fleet/ sales/     # Alquiler y venta
+    ├── services/         # Catálogo de servicios (GET público, PUT admin)
+    ├── customer/ upload/ # Ficha de cliente y subida de imágenes
+    ├── stats/ track/     # Conversiones web (first-party)
+data/                     # Datos en ficheros (ver abajo)
+scripts/backup.sh         # Copia de seguridad diaria
 ```
 
-## Features
+## Datos (ficheros)
+- `data/services.json` — catálogo de servicios y precios (**editable desde /admin**)
+- `data/fleet.json` — flota de alquiler
+- `data/sales.json` — coches en venta
+- `data/bookings.json`, `data/jobs.json` — reservas y trabajo de taller (fuera de git)
+- `data/chat.jsonl`, `data/events.jsonl` — logs de chat y de conversiones (runtime)
 
-- [x] Landing page with hero, services, fleet
-- [x] AI chatbot for diagnosis
-- [x] Booking system (form)
-- [x] FAQs accordion
-- [x] Testimonials
-- [x] SEO local (Gold Coast)
-- [x] Fully responsive
-- [ ] Database integration
-- [ ] Email notifications
-- [ ] CRM
+## Servicios y precios
+> "Prices start from" (AUD)
 
-## SEO Keywords
+| Servicio | Precio |
+|---|---|
+| Service (oil + oil filter + check) | $200 |
+| Brake pads replacement | $190 |
+| Battery Replacement | $200 |
+| OBD2 SCAN / Diagnostic | $50 |
+| Logbook servicing | $220 |
+| Pre purchase Inspection | $120 |
+| Clutch Replacement | $900 |
+| Timing belt replacement | $550 |
+| Transmission service | $360 |
+| Roadworthy Certificate RWC | $110 |
 
-- car repair Gold Coast
-- car rental Gold Coast
-- cheap car hire Gold Coast
-- mechanic Gold Coast
-- auto repair
+## Panel /admin
+- Acceso con **PIN** validado en servidor (`GC_ADMIN_PIN`).
+- Pestañas: **Agenda**, **Taller**, **Flota**, **Servicios**, **Venta**, **Clientes**, **Web**.
+- **Servicios**: editar nombre, precio y duración; añadir/eliminar. Guarda en
+  `data/services.json` (vía `PUT /api/services`, con `Bearer`) y **la web se
+  actualiza al instante** (sin build).
 
-## Deployment
+## Asistente IA
+- Por defecto funciona con un **motor de reglas local** (sin coste).
+- Para IA real: define `OPENAI_API_KEY` y reinicia (`pm2 restart gcmotors`).
 
+## Email
+- **Resend** (dominio verificado). Cada reserva avisa desde
+  `bookings@gcmotors-workshop.com` a **`rentals@`** (alquiler) o **`repairs@`**
+  (servicios/reparación), con `Reply-To` = cliente.
+- **Cloudflare Email Routing** reenvía `rentals@` / `repairs@` / `service@` / `info@`
+  a la bandeja del propietario.
+
+## Desarrollo
 ```bash
-# Development
+npm install
 npm run dev
+```
 
-# Build
+## Despliegue (autoalojado)
+```bash
+git pull
+npm ci
 npm run build
-
-# Deploy
-vercel --prod
+pm2 restart gcmotors
 ```
 
-## Environment Variables
+## Variables de entorno
+Ver `.env.example`: `GC_ADMIN_PIN`, `CRON_SECRET`, `OPENAI_API_KEY` (opcional),
+`RESEND_API_KEY`, `RESEND_FROM`, `BOOKING_TO_RENTALS`, `BOOKING_TO_REPAIRS`,
+`NEXT_PUBLIC_GOOGLE_REVIEW_URL`.
 
-Create `.env.local`:
+## Copia de seguridad
+`scripts/backup.sh` (cron `12 3 * * *`): empaqueta `data/`, `public/uploads/` y
+`.env`; conserva las 14 últimas copias.
 
-```env
-OPENAI_API_KEY=sk-...
-```
-
-## Contact
-
-- Phone: +61 481 268 633
-- Email: info@gcmotors-workshop.com
-- Address: Unit 3G, 31 Rudman Parade, Gold Coast QLD, Australia
-
-## License
-
-MIT
+## Licencia
+**AGPL-3.0** — ver [LICENSE](LICENSE).

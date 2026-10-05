@@ -20,9 +20,9 @@ interface Car { id: string; model: string; type: string; price: number; availabl
 interface SaleCar { id: string; model: string; year: number; km: string; price: number; condition: string; badge: string; description: string; status: string; createdAt: string; image?: string; }
 
 const services: Record<string, string> = {
-  "oil-change": "Oil Change", "brake-service": "Brake Service", battery: "Battery",
-  diagnostics: "Diagnostics", logbook: "Log Book", "pre-purchase": "Pre-Purchase",
-  tire: "Tire", "ac-service": "AC", clutch: "Clutch", "timing-belt": "Timing Belt",
+  "oil-change": "Service", "brake-service": "Brake pads", battery: "Battery",
+  diagnostics: "Diagnostic", logbook: "Logbook", "pre-purchase": "Pre-purchase",
+  clutch: "Clutch", "timing-belt": "Timing belt",
   transmission: "Transmission", roadworthy: "Roadworthy", rental: "Rental",
   "used-car": "Used Car", other: "Other",
 };
@@ -51,6 +51,11 @@ export default function AdminPage() {
   const [editSale, setEditSale] = useState<Partial<SaleCar>>({});
   const [showSaleForm, setShowSaleForm] = useState(false);
 
+  const [serviceList, setServiceList] = useState<any[]>([]);
+  const [editService, setEditService] = useState<any>({});
+  const [showServiceForm, setShowServiceForm] = useState(false);
+  const [serviceSaved, setServiceSaved] = useState("");
+
   const [searchPhone, setSearchPhone] = useState("");
   const [customerData, setCustomerData] = useState<any>(null);
   const [customerBookings, setCustomerBookings] = useState<Booking[]>([]);
@@ -61,6 +66,7 @@ export default function AdminPage() {
     fetch("/api/jobs", { headers }).then(r => r.json()).then(d => setJobs(d.jobs || []));
     fetch("/api/fleet", { headers }).then(r => r.json()).then(d => setFleet(d.fleet || []));
     fetch("/api/sales", { headers }).then(r => r.json()).then(d => setSales(d.sales || []));
+    fetch("/api/services", { headers }).then(r => r.json()).then(d => setServiceList(d.services || []));
   }, [authed]);
 
   useEffect(() => {
@@ -120,7 +126,25 @@ export default function AdminPage() {
 
   const deleteSale = async (id: string) => {
     await fetch("/api/sales", { method: "DELETE", headers, body: JSON.stringify({ id }) });
-    setSales(prev => prev.filter(c => c.id !== id));
+    setSales(prev => prev.filter(s => s.id !== id));
+  };
+
+  const saveService = async () => {
+    if (!editService.name?.trim()) return;
+    const list = editService.id
+      ? serviceList.map((s: any) => s.id === editService.id ? { ...s, ...editService } : s)
+      : [...serviceList, { ...editService }];
+    await fetch("/api/services", { method: "PUT", headers, body: JSON.stringify({ services: list }) });
+    const d = await (await fetch("/api/services", { headers })).json();
+    setServiceList(d.services || []);
+    setShowServiceForm(false); setEditService({});
+    setServiceSaved("Guardado ✓"); setTimeout(() => setServiceSaved(""), 2500);
+  };
+
+  const deleteService = async (id: string) => {
+    const list = serviceList.filter((s: any) => s.id !== id);
+    await fetch("/api/services", { method: "PUT", headers, body: JSON.stringify({ services: list }) });
+    setServiceList(list);
   };
 
   if (!authed) return (
@@ -165,6 +189,7 @@ export default function AdminPage() {
           {tabBtn("agenda", "Agenda")}
           {tabBtn("jobs", "Taller")}
           {tabBtn("fleet", "Flota")}
+          {tabBtn("services", "Servicios")}
           {tabBtn("sales", "Venta")}
           {tabBtn("customers", "Clientes")}
           {tabBtn("web", "Web")}
@@ -385,6 +410,46 @@ export default function AdminPage() {
                   <div className="flex gap-2">
                     <button onClick={() => { setEditCar(c); setShowForm(true); }} className="text-sm text-teal-600">Editar</button>
                     <button onClick={() => deleteCar(c.id)} className="text-sm text-red-500">Eliminar</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {tab === "services" && (
+          <>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Servicios (precios &quot;from&quot;)</h2>
+              <button onClick={() => { setEditService({ name: "", price: 0, duration: 60, icon: "\uD83D\uDD27" }); setShowServiceForm(true); }}
+                className="bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-medium">+ Añadir</button>
+            </div>
+            <p className="text-xs text-slate-500 mb-3">Los servicios con id <code>rental</code>, <code>used-car</code> y <code>other</code> no aparecen en la lista pública &quot;Workshop Services&quot;; el resto sí. Al guardar se actualiza la web al instante.</p>
+            {serviceSaved && <p className="text-sm text-green-600 mb-2">{serviceSaved}</p>}
+            {showServiceForm && (
+              <div className="bg-white rounded-2xl p-5 border shadow-sm mb-4 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <input value={editService.name || ""} onChange={e => setEditService({ ...editService, name: e.target.value })} placeholder="Nombre (p.ej. Brake pads replacement)" className="px-3 py-2 border rounded-xl text-sm col-span-2" />
+                  <input type="number" value={editService.price ?? ""} onChange={e => setEditService({ ...editService, price: Number(e.target.value) })} placeholder="Precio $" className="px-3 py-2 border rounded-xl text-sm" />
+                  <input type="number" value={editService.duration ?? ""} onChange={e => setEditService({ ...editService, duration: Number(e.target.value) })} placeholder="Duración (min)" className="px-3 py-2 border rounded-xl text-sm" />
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={saveService} className="px-4 py-2 bg-teal-600 text-white rounded-xl text-sm font-medium">Guardar</button>
+                  <button onClick={() => setShowServiceForm(false)} className="px-4 py-2 bg-stone-100 text-slate-600 rounded-xl text-sm">Cancelar</button>
+                </div>
+              </div>
+            )}
+            <div className="space-y-2">
+              {serviceList.map((s: any) => (
+                <div key={s.id} className="bg-white rounded-2xl p-4 border shadow-sm flex items-center gap-4">
+                  <div className="flex-1">
+                    <span className="font-medium">{s.icon} {s.name}</span>
+                    {["rental", "used-car", "other"].includes(s.id) && <span className="ml-2 text-xs bg-stone-100 text-slate-500 px-2 py-0.5 rounded-full">oculto en web</span>}
+                    <span className="text-teal-600 font-medium ml-3">${s.price}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => { setEditService(s); setShowServiceForm(true); }} className="text-sm text-teal-600">Editar</button>
+                    <button onClick={() => deleteService(s.id)} className="text-sm text-red-500">Eliminar</button>
                   </div>
                 </div>
               ))}
