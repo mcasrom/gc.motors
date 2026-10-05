@@ -5,11 +5,20 @@ import path from "path";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const BOOKINGS_FILE = path.join(DATA_DIR, "bookings.json");
+const ADMIN_PIN = process.env.GC_ADMIN_PIN || "";
+
+function isAdmin(auth: string | null): boolean {
+  return auth === `Bearer ${process.env.CRON_SECRET}` || auth === `Bearer ${ADMIN_PIN}`;
+}
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ phone: string }> }
 ) {
+  // PII (nombre, email, vehiculo, citas): requiere autenticacion de admin.
+  if (!isAdmin(req.headers.get("authorization")))
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { phone } = await params;
   if (!phone) return NextResponse.json({ error: "Phone required" }, { status: 400 });
 
