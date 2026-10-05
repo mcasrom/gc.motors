@@ -23,10 +23,12 @@
 # user uploads
 /public/uploads/
 
-# runtime data (reservas, trabajos, ventas) — no versionar PII
+# runtime data (reservas, trabajos, ventas, logs) — no versionar PII
 /data/bookings.json
 /data/jobs.json
 /data/sales.json
+/data/chat.jsonl
+/data/events.jsonl
 
 # backups locales
 /backups/
