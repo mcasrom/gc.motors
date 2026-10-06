@@ -55,6 +55,13 @@ scripts/backup.sh         # Copia de seguridad diaria
 | Transmission service | $360 |
 | Roadworthy Certificate RWC | $110 |
 
+## Funnel de reserva (wizard en 3 pasos, `#contact`)
+1. **Rent a car / Repair & service** (hero «Book a Repair» entra directo en reparación).
+2. **Rental**: coche de flota (o cualquiera) + fecha + días (**mín. 14**, como dice la web) + estimación de precio; **Repair**: servicio con precio + huecos reales (`GET /api/book`).
+3. **Resumen + datos + Confirm Booking** → `POST /api/book` (guarda en `data/bookings.json` y avisa por email a `rentals@`/`repairs@`) → pantalla de éxito con botón WhatsApp pre-rellenado con la referencia.
+- «Inquire» de usados → WhatsApp con el coche ya escrito (no pasa por el formulario).
+- Eventos en `/api/track`: `funnel_start {need,from?}`, `booking_success {service}`.
+
 ## Panel /admin
 - Acceso con **PIN** validado en servidor (`GC_ADMIN_PIN`).
 - Pestañas: **Agenda**, **Taller**, **Flota**, **Servicios**, **Venta**, **Clientes**, **Web**.
