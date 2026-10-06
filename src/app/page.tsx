@@ -66,9 +66,11 @@ export default function Home() {
   const [selectedService, setSelectedService] = useState<any>(null);
   const [fleetData, setFleetData] = useState<any[]>([]);
   const [saleData, setSaleData] = useState<any[]>([]);
-  const [rentalDays, setRentalDays] = useState(1);
+  const [rentalDays, setRentalDays] = useState(14);
   const [selectedCar, setSelectedCar] = useState<string>("");
   const [showCard, setShowCard] = useState(false);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [need, setNeed] = useState<"" | "rent" | "repair">("");
   const contactRef = useRef<HTMLDivElement>(null);
   const fleetRef = useRef<HTMLElement>(null);
   const fleetTracked = useRef(false);
@@ -102,10 +104,25 @@ export default function Home() {
     setSelectedService(svc || null);
   }, [form.service, serviceCatalog]);
 
+  const goBook = (needType: "rent" | "repair") => {
+    setNeed(needType);
+    setBookingData(null);
+    setBookingError("");
+    setStep(2);
+    if (needType === "rent") setForm((f) => ({ ...f, service: "rental", time: f.time || "09:00" }));
+    track("funnel_start", { need: needType });
+    setTimeout(() => contactRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+  };
+
   const handleRent = (car: any) => {
-    setForm({ ...form, service: "rental", description: `Interested in: ${car.model} (${car.type}) - $${car.price}/day` });
+    setForm({ ...form, service: "rental", time: form.time || "09:00", description: `Interested in: ${car.model} (${car.type}) - $${car.price}/day` });
     setSelectedCar(car.model);
-    setRentalDays(1);
+    setRentalDays(14);
+    setNeed("rent");
+    setBookingData(null);
+    setBookingError("");
+    setStep(2);
+    track("funnel_start", { need: "rent", from: "fleet" });
     setTimeout(() => contactRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   };
 
@@ -131,6 +148,7 @@ export default function Home() {
       const data = await res.json();
       if (data.success) {
         setBookingData(data.booking);
+        track("booking_success", { service: form.service });
         setForm({ name: "", phone: "", email: "", service: "oil-change", vehicleMake: "", vehicleModel: "", vehicleYear: "", vehiclePlate: "", date: "", time: "", description: "", consent: false });
         const sr = await fetch("/api/book");
         setSlots((await sr.json()).slots || {});
@@ -171,7 +189,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">GCMotors Workshop · Mobile Pre-Purchase Inspections, Rentals & Repairs in Gold Coast</h1>
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto drop-shadow">Mobile inspections · Car rentals · Diagnostics & repairs — for students, backpackers & locals. Fair prices, no surprises.</p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <a href="#contact" className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-full font-semibold">Book a Repair</a>
+            <a href="#contact" onClick={() => goBook("repair")} className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-full font-semibold">Book a Repair</a>
             <a href="#fleet" className="bg-white/90 text-slate-800 px-8 py-3 rounded-full font-semibold">Rent a Car</a>
             <a href="#used-cars" className="bg-[var(--color-accent)] text-white px-8 py-3 rounded-full font-semibold">Browse Used Cars</a>
             <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "hero" })} className="bg-[#25D366] text-white px-8 py-3 rounded-full font-semibold">WhatsApp us</a>
@@ -271,7 +289,9 @@ export default function Home() {
                   <h3 className="font-semibold text-lg mb-1">{car.model}</h3>
                   <p className="text-sm text-slate-500 mb-3">{car.condition}</p>
                   <div className="text-2xl font-bold text-[var(--color-primary)] mb-4">${car.price?.toLocaleString()}</div>
-                  <a href="#contact" className="block w-full bg-slate-800 text-white py-2 rounded-lg font-medium text-center">Inquire</a>
+                  <a href={`https://wa.me/61481268633?text=${encodeURIComponent(`Hi! I'm interested in the ${car.model} (${car.km} km, $${car.price?.toLocaleString()}). Is it still available?`)}`}
+                    target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "used_cars" })}
+                    className="block w-full bg-slate-800 text-white py-2 rounded-lg font-medium text-center">Inquire</a>
                 </div>
               ))}
             </div>
@@ -333,10 +353,47 @@ export default function Home() {
               <div className="text-5xl mb-4">✅</div>
               <h3 className="text-xl font-bold text-green-800 mb-2">Booking Confirmed!</h3>
               <p className="text-green-700 mb-1">{bookingData.date} at {bookingData.time}</p>
-              <button onClick={() => setBookingData(null)} className="mt-6 text-sm text-green-700 underline">Book another</button>
+              <p className="text-sm text-green-600 mb-4">Ref: {bookingData.id} · We&apos;ll confirm on WhatsApp within minutes.</p>
+              <a href={`https://wa.me/61481268633?text=${encodeURIComponent(`Hi GCMotors! I just booked for ${bookingData.date} at ${bookingData.time} (ref ${bookingData.id}).`)}`}
+                target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "booking_success" })}
+                className="inline-block bg-[#25D366] text-white px-6 py-2.5 rounded-full font-medium mb-2">Chat on WhatsApp</a>
+              <br />
+              <button onClick={() => { setBookingData(null); setStep(1); setNeed(""); }} className="mt-4 text-sm text-green-700 underline">Book another</button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-sm border border-stone-100 space-y-4">
+              <div className="flex items-center justify-center gap-2" aria-label="Booking progress">
+                {[1, 2, 3].map((s) => (
+                  <span key={s} className="flex items-center gap-2">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step >= s ? "bg-[var(--color-primary)] text-white" : "bg-stone-200 text-slate-500"}`}>{s}</span>
+                    {s < 3 && <span className="w-8 h-0.5 bg-stone-200" />}
+                  </span>
+                ))}
+              </div>
+              {step === 1 && (
+                <>
+                  <p className="text-center font-medium">What do you need?</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button type="button" onClick={() => goBook("rent")}
+                      className="p-6 rounded-2xl border-2 border-stone-200 hover:border-[var(--color-primary)] text-left">
+                      <div className="mb-2">{ICONS.rental}</div>
+                      <div className="font-bold text-lg">Rent a car</div>
+                      <p className="text-sm text-slate-600">Minimum 2 weeks · IDP + 21+</p>
+                    </button>
+                    <button type="button" onClick={() => goBook("repair")}
+                      className="p-6 rounded-2xl border-2 border-stone-200 hover:border-[var(--color-primary)] text-left">
+                      <div className="mb-2">{ICONS.diagnostics}</div>
+                      <div className="font-bold text-lg">Repair &amp; service</div>
+                      <p className="text-sm text-slate-600">Upfront prices · free initial diagnosis</p>
+                    </button>
+                  </div>
+                  <p className="text-center text-sm text-slate-500">
+                    Looking to buy? <a href="#used-cars" className="underline">See used cars</a> or{" "}
+                    <a href={WHATSAPP} target="_blank" rel="noopener" className="underline">ask us on WhatsApp</a>.
+                  </p>
+                </>
+              )}
+              {step === 3 && (
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Name *</label>
@@ -349,12 +406,14 @@ export default function Home() {
                     className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)]" />
                 </div>
               </div>
+              )}
 
+              {step === 2 && need === "repair" && (
               <div>
                 <label className="block text-sm font-medium mb-1">Service *</label>
                 <select value={form.service} onChange={e => setForm({ ...form, service: e.target.value })}
                   className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)]">
-                  {serviceCatalog.map((s: any) => (
+                  {serviceCatalog.filter((s: any) => !["rental", "used-car"].includes(s.id)).map((s: any) => (
                     <option key={s.id} value={s.id}>{s.icon} {s.name} {s.price > 0 ? `($${s.price})` : ""}</option>
                   ))}
                 </select>
@@ -362,24 +421,40 @@ export default function Home() {
                   <p className="text-xs text-teal-600 mt-1">From ${selectedService.price} AUD · ~{selectedService.duration} min</p>
                 )}
               </div>
+              )}
 
-              {form.service === "rental" && (
+              {step === 2 && form.service === "rental" && (
                 <div className="bg-teal-50 border border-teal-200 rounded-xl p-4 space-y-3">
                   <p className="text-sm font-medium text-teal-800">Rental Request</p>
+                  {fleetData.filter((c: any) => c.available).length === 0 && (
+                    <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                      All cars are out right now — send your dates and we&apos;ll put you on the waitlist.
+                    </p>
+                  )}
                   <div>
-                    <label className="block text-sm font-medium mb-1">Car interested in</label>
-                    <input type="text" value={selectedCar} onChange={e => setSelectedCar(e.target.value)} placeholder="Which car?"
-                      className="w-full px-4 py-3 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]" />
+                    <label className="block text-sm font-medium mb-1">Car</label>
+                    <select value={selectedCar} onChange={e => setSelectedCar(e.target.value)}
+                      className="w-full px-4 py-3 border border-stone-200 rounded-xl text-sm bg-white focus:outline-none focus:border-[var(--color-primary)]">
+                      <option value="">Any available car</option>
+                      {fleetData.filter((c: any) => c.available).map((c: any) => (
+                        <option key={c.id || c.model} value={c.model}>{c.model} ({c.type}) — ${c.price}/day</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1">Rental duration (days)</label>
-                    <input type="number" min={1} max={90} value={rentalDays} onChange={e => setRentalDays(Math.max(1, Number(e.target.value)))}
+                    <label className="block text-sm font-medium mb-1">Rental duration in days (min 14)</label>
+                    <input type="number" min={14} max={90} value={rentalDays} onChange={e => setRentalDays(Math.max(14, Number(e.target.value) || 14))}
                       className="w-full px-4 py-3 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]" />
                   </div>
-                  <p className="text-xs text-teal-600">Need a valid IDP (International Driving Permit). Minimum age 21.</p>
+                  {(() => {
+                    const rc = fleetData.find((c: any) => c.model === selectedCar && c.available);
+                    return rc ? <p className="text-sm text-teal-700">Estimate: <b>${(rc.price * rentalDays).toLocaleString()} AUD</b> for {rentalDays} days · final price confirmed on WhatsApp.</p>
+                      : <p className="text-xs text-teal-600">Need a valid IDP (International Driving Permit). Minimum age 21.</p>;
+                  })()}
                 </div>
               )}
 
+              {step === 2 && need === "repair" && (
               <div className="border-t border-stone-100 pt-4">
                 <p className="text-sm font-medium text-slate-700 mb-3">Your Vehicle (optional but recommended)</p>
                 <div className="grid grid-cols-2 gap-3">
@@ -389,10 +464,13 @@ export default function Home() {
                   <input value={form.vehiclePlate} onChange={e => setForm({ ...form, vehiclePlate: e.target.value })} placeholder="Plate (optional)" className="px-4 py-3 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]" />
                 </div>
               </div>
+              )}
 
+              {step === 2 && (
+              <>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Date *</label>
+                  <label className="block text-sm font-medium mb-1">{need === "rent" ? "Pick-up date *" : "Date *"}</label>
                   <input type="date" required value={form.date} onChange={e => { setForm({ ...form, date: e.target.value }); }}
                     min={new Date().toISOString().split("T")[0]}
                     className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:border-[var(--color-primary)]" />
@@ -414,7 +492,21 @@ export default function Home() {
               {form.date && slots[form.date] && slots[form.date].length === 0 && (
                 <p className="text-sm text-amber-600">No available times for this date. Pick another day.</p>
               )}
+              <div className="flex gap-3">
+                <button type="button" onClick={() => setStep(1)} className="px-6 py-3 rounded-xl border border-stone-200 font-medium">Back</button>
+                <button type="button" disabled={!form.date || !form.time} onClick={() => setStep(3)}
+                  className="flex-1 bg-[var(--color-primary)] text-white py-3 rounded-xl font-semibold disabled:opacity-50">Continue</button>
+              </div>
+              </>
+              )}
 
+              {step === 3 && (
+              <>
+              <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 text-sm text-slate-700">
+                <p><b>{need === "rent" ? "Rental" : "Service"}:</b> {need === "rent"
+                  ? `${selectedCar || "Any available car"} · ${rentalDays} days from ${form.date}${form.time ? ` at ${form.time}` : ""}`
+                  : `${selectedService ? selectedService.name : form.service} · ${form.date}${form.time ? ` at ${form.time}` : ""}`}</p>
+              </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Describe your issue (optional)</label>
                 <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
@@ -427,10 +519,15 @@ export default function Home() {
               </label>
 
               {bookingError && <p className="text-red-600 text-sm">{bookingError}</p>}
-              <button type="submit" disabled={!form.date || !form.time}
-                className="w-full bg-[var(--color-primary)] text-white py-3 rounded-xl font-semibold disabled:opacity-50">
-                {!form.time ? "Select a time" : "Confirm Booking"}
-              </button>
+              <div className="flex gap-3">
+                <button type="button" onClick={() => setStep(2)} className="px-6 py-3 rounded-xl border border-stone-200 font-medium">Back</button>
+                <button type="submit" disabled={!form.date || !form.time}
+                  className="flex-1 bg-[var(--color-primary)] text-white py-3 rounded-xl font-semibold disabled:opacity-50">
+                  {!form.time ? "Select a time" : "Confirm Booking"}
+                </button>
+              </div>
+              </>
+              )}
             </form>
           )}
           <div className="text-center mt-6 text-sm text-slate-500">
