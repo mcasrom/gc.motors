@@ -2,6 +2,33 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Script from "next/script";
+
+// Service area: workshop + suburbs (coords verified via Nominatim, 7-oct-2026).
+const WORKSHOP: { name: string; addr: string; lat: number; lng: number } =
+  { name: "GCMotors Workshop", addr: "Unit 3G, 31 Rudman Parade", lat: -28.104, lng: 153.4201 };
+const SUBURBS: { name: string; lat: number; lng: number }[] = [
+  { name: "Southport", lat: -27.9688, lng: 153.4067 },
+  { name: "Surfers Paradise", lat: -27.999, lng: 153.424 },
+  { name: "Broadbeach", lat: -28.0281, lng: 153.4313 },
+  { name: "Mermaid Beach", lat: -28.0484, lng: 153.4365 },
+  { name: "Nobby Beach", lat: -28.0591, lng: 153.4392 },
+  { name: "Burleigh Heads", lat: -28.1021, lng: 153.4396 },
+  { name: "Palm Beach", lat: -28.1155, lng: 153.4584 },
+  { name: "Currumbin", lat: -28.137, lng: 153.4799 },
+  { name: "Coolangatta", lat: -28.1683, lng: 153.5388 },
+  { name: "Robina", lat: -28.0706, lng: 153.3916 },
+  { name: "Varsity Lakes", lat: -28.0971, lng: 153.3992 },
+  { name: "Nerang", lat: -27.9941, lng: 153.35 },
+  { name: "Ashmore", lat: -27.9909, lng: 153.3771 },
+  { name: "Helensvale", lat: -27.9254, lng: 153.339 },
+  { name: "Coomera", lat: -27.8658, lng: 153.3195 },
+  { name: "Pimpama", lat: -27.831, lng: 153.3025 },
+  { name: "Hope Island", lat: -27.88, lng: 153.3308 },
+  { name: "Runaway Bay", lat: -27.9122, lng: 153.403 },
+  { name: "Labrador", lat: -27.9428, lng: 153.3987 },
+  { name: "Biggera Waters", lat: -27.9272, lng: 153.3984 },
+];
 
 const services = [
   { key: "inspection", title: "Mobile Pre-Purchase Inspections", desc: "Buying a car? We come to you anywhere in Gold Coast and inspect it before you pay. Full report, no surprises." },
@@ -74,6 +101,36 @@ export default function Home() {
   const contactRef = useRef<HTMLDivElement>(null);
   const fleetRef = useRef<HTMLElement>(null);
   const fleetTracked = useRef(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapDone = useRef(false);
+  const mapSeen = useRef(false);
+
+  const initMap = () => {
+    const L = (window as any).L;
+    if (!L || !mapRef.current || mapDone.current) return;
+    mapDone.current = true;
+    try {
+      const map = L.map(mapRef.current, { scrollWheelZoom: false }).setView([WORKSHOP.lat, WORKSHOP.lng], 10);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+      const dot = (color: string, size: number) => L.divIcon({
+        className: "", html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div>`,
+        iconSize: [size, size], iconAnchor: [size / 2, size / 2],
+      });
+      const bounds: [number, number][] = [[WORKSHOP.lat, WORKSHOP.lng]];
+      for (const s of SUBURBS) {
+        L.marker([s.lat, s.lng], { icon: dot("#0f766e", 12) })
+          .bindPopup(`<b>${s.name}</b><br>Mobile inspections &amp; pick-up available`)
+          .addTo(map);
+        bounds.push([s.lat, s.lng]);
+      }
+      L.marker([WORKSHOP.lat, WORKSHOP.lng], { icon: dot("#f59e0b", 18) })
+        .bindPopup(`<b>${WORKSHOP.name}</b><br>${WORKSHOP.addr}<br><a href="tel:+61481268633">+61 481 268 633</a>`)
+        .addTo(map);
+      map.fitBounds(bounds, { padding: [24, 24] });
+    } catch { /* mapa opcional: la lista de zonas sigue visible */ }
+  };
 
   useEffect(() => {
     fetch("/api/services").then(r => r.json()).then(d => setServiceCatalog(d.services || [])).catch(() => {});
@@ -91,6 +148,23 @@ export default function Home() {
         if (e.isIntersecting && !fleetTracked.current) {
           fleetTracked.current = true;
           track("view_fleet");
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Vista del mapa (una vez): mide interés en la zona de servicio.
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && !mapSeen.current) {
+          mapSeen.current = true;
+          track("view_map");
           io.disconnect();
         }
       });
@@ -341,6 +415,17 @@ export default function Home() {
             Hope Island · Runaway Bay · Labrador · Biggera Waters
           </p>
           <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "areas" })} className="inline-block mt-6 bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-medium">Ask about your suburb on WhatsApp</a>
+        </div>
+      </section>
+
+      <section id="service-area" className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-2">Service Area Map</h2>
+          <p className="text-center text-lg text-slate-700 mb-8">Workshop in Burleigh Heads + mobile service across these suburbs. Tap a dot for details.</p>
+          <link rel="stylesheet" href="/leaflet/leaflet.css" />
+          <Script src="/leaflet/leaflet.js" strategy="lazyOnload" onLoad={initMap} />
+          <div ref={mapRef} className="w-full rounded-2xl border border-stone-200 overflow-hidden" style={{ height: 420 }} role="img" aria-label="Map of Gold Coast service area" />
+          <p className="text-center text-xs text-slate-400 mt-3">Map data © OpenStreetMap contributors · Suburb dots are approximate centres</p>
         </div>
       </section>
 
