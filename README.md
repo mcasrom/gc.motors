@@ -62,6 +62,9 @@ scripts/backup.sh         # Copia de seguridad diaria
 - «Inquire» de usados → WhatsApp con el coche ya escrito (no pasa por el formulario).
 - Eventos en `/api/track`: `funnel_start {need,from?}`, `booking_success {service}`.
 
+## Mapa de zona de servicio (`#service-area`, Leaflet)
+Taller (Burleigh Heads) + 20 suburbs con popups, tras «Areas We Serve». Leaflet 1.9.4 **autoalojado** en `public/leaflet/` (reutilizado de FIMI, sin CDN; teselas OSM) + CSS propio; marcadores `divIcon` inline (sin imágenes). Coordenadas verificadas por Nominatim (7-oct-2026). Carga perezosa (`next/script lazyOnload`, sin zoom con rueda) + evento `view_map` en tracking. RAM extra cero.
+
 ## Panel /admin
 - Acceso con **PIN** validado en servidor (`GC_ADMIN_PIN`).
 - Pestañas: **Agenda**, **Taller**, **Flota**, **Servicios**, **Venta**, **Clientes**, **Web**.
