@@ -405,6 +405,34 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="guides" className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-2">Guides &amp; Tips</h2>
+          <p className="text-center text-lg text-slate-700 mb-10 max-w-xl mx-auto">Practical checklists from the workshop floor — pass inspections first time, skip the surprises.</p>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="bg-stone-50 p-7 rounded-2xl border border-stone-100 hover:shadow-md flex flex-col">
+              <div className="text-4xl mb-3">🚗</div>
+              <h3 className="font-bold text-xl text-slate-800 mb-2">How to Pass Your QLD Roadworthy Certificate (RWC) in Burleigh Heads</h3>
+              <p className="text-slate-700 mb-1">Guía técnica: cómo pasar la inspección RWC sin sorpresas ni costes ocultos.</p>
+              <p className="text-slate-600 text-[15px] mb-5">5-point pre-inspection checklist (tyres, brakes, lights, wipers, leaks) + the 2 RWC myths that cost buyers money + 14-day re-check rule.</p>
+              <div className="mt-auto flex flex-wrap gap-2.5">
+                <a href="/guides/roadworthy-certificate-burleigh-heads" onClick={() => track("click_guide", { where: "home_card" })} className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-semibold">Read the guide →</a>
+                <a href="tel:+61481268633" onClick={() => track("click_call", { where: "home_card" })} className="border border-slate-300 px-6 py-2.5 rounded-full text-sm font-semibold">📞 Call</a>
+                <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "home_card" })} className="bg-[#25D366] text-white px-6 py-2.5 rounded-full text-sm font-semibold">WhatsApp</a>
+              </div>
+            </div>
+            <div className="bg-slate-800 text-white p-7 rounded-2xl flex flex-col justify-center">
+              <div className="text-4xl mb-3">🔧</div>
+              <h3 className="font-bold text-xl mb-2">Buying used? Get a pre-purchase inspection first</h3>
+              <p className="text-slate-300 text-[15px] mb-5">An RWC checks safety, not engine health. Our mobile inspection covers the full mechanical picture before you hand over cash — anywhere on the Gold Coast.</p>
+              <div className="flex flex-wrap gap-2.5">
+                <a href="#contact" onClick={() => track("click_book", { where: "home_card" })} className="bg-white text-slate-900 px-6 py-2.5 rounded-full text-sm font-semibold">Book inspection</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-12 px-4 bg-stone-50">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-3">Areas We Serve</h2>
