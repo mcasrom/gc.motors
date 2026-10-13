@@ -296,6 +296,8 @@ export default function Home() {
           <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-2xl">
             {promoPlay ? (
               <video className="w-full h-full" controls autoPlay playsInline preload="none" poster="/promo-poster.jpg">
+                <source src="/gcmotors_workshop_promo_45s.av1.webm" type="video/webm; codecs=av01" />
+                <source src="/gcmotors_workshop_promo_45s.webm" type="video/webm; codecs=vp9" />
                 <source src="/gcmotors_workshop_promo_45s.mp4" type="video/mp4" />
                 <track kind="captions" src="/gcmotors_workshop_promo_45s.vtt" srcLang="en" label="English" default />
                 Your browser does not support the video tag.
