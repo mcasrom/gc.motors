@@ -98,6 +98,7 @@ export default function Home() {
   const [showCard, setShowCard] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [need, setNeed] = useState<"" | "rent" | "repair">("");
+  const [promoPlay, setPromoPlay] = useState(false);
   const contactRef = useRef<HTMLDivElement>(null);
   const fleetRef = useRef<HTMLElement>(null);
   const fleetTracked = useRef(false);
@@ -235,9 +236,24 @@ export default function Home() {
     "@type": "FAQPage",
     "mainEntity": faqs.map(f => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
+  const videoLd = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: "GCMotors Workshop — 45-second promo",
+    description: "Mobile pre-purchase inspections, car rentals, diagnostics and repairs in Gold Coast, Queensland.",
+    thumbnailUrl: ["https://gcmotors-workshop.com/promo-poster.jpg"],
+    uploadDate: "2026-10-13",
+    duration: "PT45S",
+    contentUrl: "https://gcmotors-workshop.com/gcmotors_workshop_promo_45s.mp4",
+    embedUrl: "https://gcmotors-workshop.com/#promo",
+    regionsAllowed: "AU",
+    inLanguage: "en",
+    publisher: { "@type": "Organization", name: "GCMotors Workshop", url: "https://gcmotors-workshop.com" },
+  };
   return (
     <div className="min-h-screen bg-[var(--color-surface)] font-body text-[var(--color-foreground)] pb-16 md:pb-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoLd) }} />
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
           <a href="#" className="flex items-center gap-2">
@@ -249,6 +265,7 @@ export default function Home() {
             <a href="#fleet" className="hover:text-[var(--color-primary)]">Rentals</a>
             <a href="#used-cars" className="hover:text-[var(--color-primary)]">Buy</a>
             <a href="/about" className="hover:text-[var(--color-primary)]">About</a>
+            <a href="#promo" className="hover:text-[var(--color-primary)]">Watch ▶</a>
             <a href="#chat" className="hover:text-[var(--color-primary)]">AI Chat</a>
             <a href="#contact" className="hover:text-[var(--color-primary)]">Contact</a>
           </div>
@@ -268,6 +285,42 @@ export default function Home() {
             <a href="#used-cars" className="bg-[var(--color-accent)] text-white px-8 py-3 rounded-full font-semibold">Browse Used Cars</a>
             <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "hero" })} className="bg-[#25D366] text-white px-8 py-3 rounded-full font-semibold">WhatsApp us</a>
           </div>
+        </div>
+      </section>
+
+      {/* Promo (45 s) — facade: poster + play. El MP4 solo se carga al pulsar, asi el LCP del hero no se toca. */}
+      <section id="promo" className="py-16 px-4 bg-slate-900 text-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-2">What we do — in 45 seconds</h2>
+          <p className="text-slate-300 mb-8 max-w-2xl mx-auto">Mobile pre-purchase inspections, rentals, diagnostics &amp; repairs across the Gold Coast.</p>
+          <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-2xl">
+            {promoPlay ? (
+              <video className="w-full h-full" controls autoPlay playsInline preload="none" poster="/promo-poster.jpg">
+                <source src="/gcmotors_workshop_promo_45s.mp4" type="video/mp4" />
+                <track kind="captions" src="/gcmotors_workshop_promo_45s.vtt" srcLang="en" label="English" default />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <button type="button" onClick={() => { setPromoPlay(true); track("play_promo", { where: "home" }); }}
+                aria-label="Play the 45-second GCMotors Workshop promo" className="group absolute inset-0 w-full h-full">
+                <Image src="/promo-poster.jpg" alt="GCMotors Workshop promo — mobile pre-purchase inspections, rentals and repairs in Gold Coast" fill sizes="(max-width:1024px) 100vw, 896px" className="object-cover" />
+                <span className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/15 transition">
+                  <span className="w-20 h-20 rounded-full bg-white/95 text-slate-900 flex items-center justify-center shadow-xl group-hover:scale-105 transition" style={{ paddingLeft: 4 }}>
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+                  </span>
+                </span>
+              </button>
+            )}
+          </div>
+          <div className="flex gap-3 justify-center flex-wrap mt-6">
+            <a href={WHATSAPP} target="_blank" rel="noopener" onClick={() => track("click_whatsapp", { where: "promo" })} className="bg-[#25D366] text-white px-6 py-3 rounded-full font-semibold">WhatsApp us</a>
+            <a href="#contact" onClick={() => goBook("repair")} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-full font-semibold">Book a Repair</a>
+            <a href="#fleet" className="bg-white/90 text-slate-800 px-6 py-3 rounded-full font-semibold">See rentals</a>
+          </div>
+          <details className="mt-6 text-left max-w-2xl mx-auto text-slate-300 text-sm">
+            <summary className="cursor-pointer font-semibold text-slate-200">Video transcript (English)</summary>
+            <p className="mt-2 leading-relaxed">New to the Gold Coast and need a reliable car? Thinking of buying a used vehicle? Get it properly checked first. At GCMotors Workshop, we come to you: mobile pre-purchase inspections, right where the car is. Already have car trouble? We offer full diagnostics, repairs and regular servicing. Prefer to rent instead? We have flexible weekly and monthly car rentals available. Inspect. Repair. Rent. Drive. GCMotors Workshop, Gold Coast, Queensland — your local automotive workshop.</p>
+          </details>
         </div>
       </section>
 
