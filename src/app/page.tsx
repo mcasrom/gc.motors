@@ -242,7 +242,7 @@ export default function Home() {
     name: "GCMotors Workshop — 45-second promo",
     description: "Mobile pre-purchase inspections, car rentals, diagnostics and repairs in Gold Coast, Queensland.",
     thumbnailUrl: ["https://gcmotors-workshop.com/promo-poster.jpg"],
-    uploadDate: "2026-10-13",
+    uploadDate: "2026-10-13T10:00:00+10:00",
     duration: "PT45S",
     contentUrl: "https://gcmotors-workshop.com/gcmotors_workshop_promo_45s.mp4",
     embedUrl: "https://gcmotors-workshop.com/#promo",
